@@ -31,20 +31,29 @@ export class Renderer {
     this.head.position.x = head.x;
     this.head.position.y = head.y;
 
-    const difference = this.bodies.children.length - bodies.length;
+    // const difference = this.bodies.children.length - bodies.length;
 
-    if (difference > 0) {
-      for (let i = 0; i < difference; i++) {
-        this.bodies.children.pop();
-      }
-    } else if (difference < 0) {
-      for (let i = difference; i < 0; i++) {
-        const bodyGraphicContainer = new Container();
-        const bodyGraphic = this.newPixel("gray");
-        bodyGraphicContainer.addChild(bodyGraphic);
+    // if (difference > 0) {
+    //   for (let i = 0; i < difference; i++) {
+    //     this.bodies.children.pop();
+    //   }
+    // } else if (difference < 0) {
+    //   for (let i = difference; i < 0; i++) {
+    //     const bodyGraphicContainer = new Container();
+    //     const bodyGraphic = this.newPixel("gray");
+    //     bodyGraphicContainer.addChild(bodyGraphic);
 
-        this.bodies.addChild(bodyGraphicContainer);
-      }
+    //     this.bodies.addChild(bodyGraphicContainer);
+    //   }
+    // }
+
+    this.bodies.removeChildren();
+
+    for (let i = 0; i < bodies.length; i++) {
+      const bodyGraphicContainer = new Container();
+      const bodyGraphic = this.newPixel("gray");
+      bodyGraphicContainer.addChild(bodyGraphic);
+      this.bodies.addChild(bodyGraphicContainer);
     }
 
     this.bodies.children.forEach((body, i) => {

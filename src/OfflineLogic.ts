@@ -231,8 +231,10 @@ export class OfflineLogic {
   private addLength = (amount: number) => {
     if (amount > 0) {
       const lastBody = this.bodies[this.bodies.length - 1];
-      const x = lastBody !== undefined ? lastBody.x : this.head.x;
-      const y = lastBody !== undefined ? lastBody.y : this.head.y;
+      const [x, y] =
+        lastBody !== undefined
+          ? [lastBody.x, lastBody.y]
+          : [this.head.x, this.head.y];
 
       for (let i = 0; i < amount; i++) {
         this.bodies.push({ x, y });
