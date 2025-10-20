@@ -308,3 +308,5 @@ export function normalizeVelocity(velocity: Velocity, constant: number) {
     y: (velocity.y / magnitude) * desiredSpeed,
   };
 }
+
+// TODO: random coordinate calculate avoid tiles with stuff in it

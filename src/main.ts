@@ -49,16 +49,11 @@ export class MiniSnakes implements Disposable {
     this.app.ticker.add(this.onTick);
 
     document.body.appendChild(this.app.canvas);
-    this.update();
+    this.onTick();
   }
 
   public onTick = () => {
-    this.update();
-  };
-
-  public update = () => {
     this.logic.update();
-
     this.renderer.set(
       this.logic.head,
       this.logic.bodies,
@@ -71,3 +66,4 @@ export class MiniSnakes implements Disposable {
   const miniSnakes = new MiniSnakes();
   await miniSnakes.init();
 })();
+
