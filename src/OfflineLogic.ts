@@ -76,6 +76,7 @@ export class OfflineLogic {
     this.head = this.generateRandomCoordinate(this.width, this.height);
     this.exactHead = { x: this.head.x, y: this.head.y };
     this.normalfood = this.generateRandomCoordinate(this.width, this.height);
+
     this.bodies = Array.from({ length: config.startingLength ?? DEFAULT_STARTING_LENGTH }, () => ({
       x: this.head.x,
       y: this.head.y,
@@ -171,6 +172,9 @@ export class OfflineLogic {
 
     this.setDirectionFromVelocity();
 
+    this.bodies.unshift({ x: this.head.x, y: this.head.y });
+    this.bodies.pop();
+
     if (this.currentDirection === Direction.Up) {
       this.head.y -= this.gridSize;
     } else if (this.currentDirection === Direction.Left) {
@@ -180,9 +184,6 @@ export class OfflineLogic {
     } else if (this.currentDirection === Direction.Right) {
       this.head.x += this.gridSize;
     }
-
-    this.bodies.unshift({ x: this.head.x, y: this.head.y });
-    this.bodies.pop();
 
     let wrappedAround = false;
 
@@ -207,15 +208,13 @@ export class OfflineLogic {
       this.exactHead.y = this.head.y;
     }
 
-    const collision = this.checkForCollision();
+    const collision = this.checkForCollision(this.head);
     if (collision === CollisionResult.NormalFood) {
       this.addLength(1);
       this.normalfood = this.generateRandomCoordinate(this.width, this.height);
+    } else if (collision === CollisionResult.Self) {
+      this.addLength(3 - this.bodies.length);
     }
-
-    // else if (collision === CollisionResult.Self) {
-    //   this.addLength(-6);
-    // }
 
     this.updatesSinceLastTurn += 1;
   };
@@ -236,19 +235,16 @@ export class OfflineLogic {
     }
   };
 
-  public checkForCollision = (): CollisionResult => {
-    if (
-      this.head.x === this.normalfood.x &&
-      this.head.y === this.normalfood.y
+  public checkForCollision = (coordinate: Coordinate): CollisionResult => {
+    if (this.normalfood && // TODO: is there a way in typescript to avoid calling this function when it can be undefined?
+      coordinate.x === this.normalfood.x &&
+      coordinate.y === this.normalfood.y
     ) {
       return CollisionResult.NormalFood;
     }
 
-    if (
-      this.bodies.every(
-        (body) => !(body.x === this.head.x && body.y === this.head.y)
-      )
-    ) {
+    if (this.bodies?.some(body => body.x === coordinate.x && body.y === coordinate.y)) {
+      console.log("self collide");
       return CollisionResult.Self;
     }
 
@@ -289,10 +285,24 @@ export class OfflineLogic {
       return Math.floor(Math.random() * max);
     };
 
-    return {
-      x: this.floorToGrid(randInt(width)),
-      y: this.floorToGrid(randInt(height)),
-    };
+    const generateUncheckedRandomCoordinate = (): Coordinate => {
+      return {
+        x: this.floorToGrid(randInt(width)),
+        y: this.floorToGrid(randInt(height)),
+      }
+    }
+
+    let randomCoordinate = generateUncheckedRandomCoordinate();
+
+    for (let i = 0; i < 20; i++) {
+      if (this.checkForCollision(randomCoordinate) === CollisionResult.Nothing) {
+        break;
+      }
+
+      randomCoordinate = generateUncheckedRandomCoordinate();
+    }
+
+    return randomCoordinate;
   }
 }
 
