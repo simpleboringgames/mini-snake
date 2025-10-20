@@ -63,6 +63,7 @@ export class OfflineLogic {
   private width: number;
   private height: number;
   private gridSize: number;
+  private startingLength: number;
 
   updatesSinceLastTurn: number = 0;
 
@@ -70,6 +71,7 @@ export class OfflineLogic {
     this.width = config.width ?? window.innerWidth;
     this.height = config.height ?? window.innerHeight;
     this.gridSize = config.gridSize ?? DEFAULT_GRID_SIZE;
+    this.startingLength = config.startingLength ?? DEFAULT_STARTING_LENGTH;
 
     this.velocity = this.generateRandomVelocity();
 
@@ -77,7 +79,7 @@ export class OfflineLogic {
     this.exactHead = { x: this.head.x, y: this.head.y };
     this.normalfood = this.generateRandomCoordinate(this.width, this.height);
 
-    this.bodies = Array.from({ length: config.startingLength ?? DEFAULT_STARTING_LENGTH }, () => ({
+    this.bodies = Array.from({ length: this.startingLength }, () => ({
       x: this.head.x,
       y: this.head.y,
     }));
@@ -213,7 +215,7 @@ export class OfflineLogic {
       this.addLength(1);
       this.normalfood = this.generateRandomCoordinate(this.width, this.height);
     } else if (collision === CollisionResult.Self) {
-      this.addLength(3 - this.bodies.length);
+      this.reset();
     }
 
     this.updatesSinceLastTurn += 1;
@@ -234,6 +236,12 @@ export class OfflineLogic {
       }
     }
   };
+
+  private reset = () => {
+    this.addLength(0 - this.bodies.length);
+    this.head = this.generateRandomCoordinate(this.width, this.height);
+    this.addLength(this.startingLength);
+  }
 
   public checkForCollision = (coordinate: Coordinate): CollisionResult => {
     if (this.normalfood && // TODO: is there a way in typescript to avoid calling this function when it can be undefined?
