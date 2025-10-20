@@ -225,6 +225,10 @@ export class OfflineLogic {
       this.poisonFood = this.generateRandomCoordinate(this.width, this.height);
     }
 
+    // else if (collision === CollisionResult.Self) {
+    //   this.addLength(-6);
+    // }
+
     this.updatesSinceLastTurn += 1;
   };
 
@@ -268,7 +272,7 @@ export class OfflineLogic {
 
     if (
       this.bodies.every(
-        (body) => !(body.x === this.head.x && body.x === this.head.x)
+        (body) => !(body.x === this.head.x && body.y === this.head.y)
       )
     ) {
       return CollisionResult.Self;
