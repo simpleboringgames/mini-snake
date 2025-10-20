@@ -49,8 +49,6 @@ export class OfflineLogic {
   head: SnakeBody;
   bodies: Array<SnakeBody>;
   normalfood: Food;
-  specialFood: Food;
-  poisonFood: Food;
 
   lastInput: Input = Input.Velocity;
 
@@ -78,8 +76,6 @@ export class OfflineLogic {
     this.head = this.generateRandomCoordinate(this.width, this.height);
     this.exactHead = { x: this.head.x, y: this.head.y };
     this.normalfood = this.generateRandomCoordinate(this.width, this.height);
-    this.specialFood = this.generateRandomCoordinate(this.width, this.height);
-    this.poisonFood = this.generateRandomCoordinate(this.width, this.height);
     this.bodies = Array.from({ length: config.startingLength ?? DEFAULT_STARTING_LENGTH }, () => ({
       x: this.head.x,
       y: this.head.y,
@@ -91,8 +87,6 @@ export class OfflineLogic {
     this.height = height;
 
     this.normalfood = this.calculateNewFoodPosition(this.normalfood);
-    this.specialFood = this.calculateNewFoodPosition(this.specialFood);
-    this.poisonFood = this.calculateNewFoodPosition(this.poisonFood);
   };
 
   private setDirection = (newDirection: Direction) => {
@@ -217,12 +211,6 @@ export class OfflineLogic {
     if (collision === CollisionResult.NormalFood) {
       this.addLength(1);
       this.normalfood = this.generateRandomCoordinate(this.width, this.height);
-    } else if (collision === CollisionResult.SpecialFood) {
-      this.addLength(4);
-      this.specialFood = this.generateRandomCoordinate(this.width, this.height);
-    } else if (collision === CollisionResult.PoisonFood) {
-      this.addLength(-6);
-      this.poisonFood = this.generateRandomCoordinate(this.width, this.height);
     }
 
     // else if (collision === CollisionResult.Self) {
@@ -254,20 +242,6 @@ export class OfflineLogic {
       this.head.y === this.normalfood.y
     ) {
       return CollisionResult.NormalFood;
-    }
-
-    if (
-      this.head.x === this.specialFood.x &&
-      this.head.y === this.specialFood.y
-    ) {
-      return CollisionResult.SpecialFood;
-    }
-
-    if (
-      this.head.x === this.poisonFood.x &&
-      this.head.y === this.poisonFood.y
-    ) {
-      return CollisionResult.PoisonFood;
     }
 
     if (

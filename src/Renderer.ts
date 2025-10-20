@@ -5,8 +5,6 @@ export class Renderer {
   private bodies: Container = new Container();
   private head;
   private normalfood;
-  private specialFood;
-  private poisonFood;
 
   private gridSize: number;
 
@@ -15,22 +13,16 @@ export class Renderer {
 
     this.head = this.newPixel("rgb(255, 81, 0)");
     this.normalfood = this.newPixel("rgb(0, 156, 52)");
-    this.specialFood = this.newPixel("rgb(107, 0, 168)");
-    this.poisonFood = this.newPixel("rgba(155, 10, 0, 1)");
 
     app.stage.addChild(this.bodies);
     app.stage.addChild(this.head);
     app.stage.addChild(this.normalfood);
-    app.stage.addChild(this.specialFood);
-    app.stage.addChild(this.poisonFood);
   }
 
   public set = (
     head: Coordinate,
     bodies: Array<Coordinate>,
     normalfood: Coordinate,
-    specialFood: Coordinate,
-    poisonFood: Coordinate,
   ) => {
     this.head.position.x = head.x;
     this.head.position.y = head.y;
@@ -58,8 +50,6 @@ export class Renderer {
     });
 
     this.normalfood.position.set(normalfood.x, normalfood.y);
-    this.specialFood.position.set(specialFood.x, specialFood.y);
-    this.poisonFood.position.set(poisonFood.x, poisonFood.y);
   };
 
   private newPixel = (fill: FillInput) => {

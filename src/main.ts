@@ -63,8 +63,6 @@ export class MiniSnakes implements Disposable {
       this.logic.head,
       this.logic.bodies,
       this.logic.normalfood,
-      this.logic.specialFood,
-      this.logic.poisonFood,
     );
   };
 }
