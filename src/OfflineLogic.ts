@@ -31,7 +31,7 @@ export class OfflineLogic {
   constructor(config: Config) {
     this.config = config;
 
-    this.head = { x: 10, y: 10 } // OfflineLogic.generateRandomCoordinate({ width: this.config.width, height: this.config.height });
+    this.head = OfflineLogic.generateRandomCoordinate({ width: this.config.width, height: this.config.height });
     this.exactHead = { x: this.head.x, y: this.head.y }
     this.bodies = Array.from({ length: this.config.startingLength }, () => ({ x: this.head.x, y: this.head.y }));
     this.food = OfflineLogic.generateRandomCoordinate({ width: this.config.width, height: this.config.height }, { snake: [this.head] });
