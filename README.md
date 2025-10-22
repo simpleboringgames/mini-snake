@@ -22,4 +22,5 @@ Some things I would like to do in the future (unless someone wants to contribute
  - Snake chases mouse in a better way (currently requires exactly diagonal - hard to predict - less reactive as I would like)
  - Online multiplayer mode
  - Less code (but still readable)!
+ - Smaller output size
  - Faster code (but still readable)!
