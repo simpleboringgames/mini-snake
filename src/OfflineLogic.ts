@@ -1,98 +1,83 @@
 export const DEFAULT_GRID_SIZE = 20;
 export const DEFAULT_STARTING_LENGTH = 10;
-
-export type Coordinate = {
-  x: number;
-  y: number;
-};
-
-export type Config = {
-  width: number;
-  height: number;
-  gridSize: number;
-  startingLength: number
-}
-
+export type Coordinate = { x: number; y: number; };
+export type Config = { width: number; height: number; startingLength: number }
 export type SnakeBody = Coordinate;
 export type Food = Coordinate;
-
 export type Velocity = { x: number; y: number };
-
-export type AlteredPieces = {
-  head: Coordinate;
-  bodyAdded: Array<Coordinate>;
-  bodyRemoved: Array<Coordinate>;
-};
-
-enum Direction {
-  Up,
-  Left,
-  Down,
-  Right,
-}
-
-enum Input {
-  Target,
-  Velocity,
-}
-
-enum CollisionResult {
-  Nothing,
-  Self,
-  NormalFood,
-  SpecialFood,
-  PoisonFood,
-}
+export type AlteredPieces = { head: Coordinate; bodyAdded: Array<Coordinate>; bodyRemoved: Array<Coordinate>; };
+export enum Direction { Up, Left, Down, Right, }
+enum Input { Target, Velocity, }
+enum CollisionResult { Nothing, Snake, Food, }
 
 export class OfflineLogic {
-  exactHead: Coordinate;
+  private config: Config;
+
   head: SnakeBody;
+  exactHead: Coordinate;
   bodies: Array<SnakeBody>;
-  normalfood: Food;
+  food: Food;
 
-  lastInput: Input = Input.Velocity;
+  lastInput: Input;
 
+  velocity: Velocity | undefined;
   nextVelocity: Velocity | undefined;
   nextNextVelocity: Velocity | undefined;
 
-  velocity: Velocity | undefined;
   target: Coordinate | undefined;
 
-  currentDirection: Direction = Direction.Right;
+  currentDirection: Direction;
 
-  private width: number;
-  private height: number;
-  private gridSize: number;
-  private startingLength: number;
+  updatesSinceLastTurn: number;
 
-  updatesSinceLastTurn: number = 0;
+  constructor(config: Config) {
+    this.config = config;
 
-  constructor(config: Partial<Config>) {
-    this.width = config.width ?? window.innerWidth;
-    this.height = config.height ?? window.innerHeight;
-    this.gridSize = config.gridSize ?? DEFAULT_GRID_SIZE;
-    this.startingLength = config.startingLength ?? DEFAULT_STARTING_LENGTH;
-
-    this.velocity = this.generateRandomVelocity();
-
-    this.head = this.generateRandomCoordinate(this.width, this.height);
-    this.exactHead = { x: this.head.x, y: this.head.y };
-    this.normalfood = this.generateRandomCoordinate(this.width, this.height);
-
-    this.bodies = Array.from({ length: this.startingLength }, () => ({
-      x: this.head.x,
-      y: this.head.y,
-    }));
+    this.head = { x: 10, y: 10 } // OfflineLogic.generateRandomCoordinate({ width: this.config.width, height: this.config.height });
+    this.exactHead = { x: this.head.x, y: this.head.y }
+    this.bodies = Array.from({ length: this.config.startingLength }, () => ({ x: this.head.x, y: this.head.y }));
+    this.food = OfflineLogic.generateRandomCoordinate({ width: this.config.width, height: this.config.height }, { snake: [this.head] });
+    this.lastInput = Input.Velocity;
+    this.currentDirection = Direction.Up;
+    this.updatesSinceLastTurn = 0;
   }
 
-  public setWidthAndHeight = (width: number, height: number) => {
-    this.width = width;
-    this.height = height;
+  static checkForCollision(target: Coordinate, food?: Coordinate, snake?: Array<Coordinate>): CollisionResult {
+    if (food && target.x === food.x && target.y === food.y) {
+      return CollisionResult.Food;
+    }
 
-    this.normalfood = this.calculateNewFoodPosition(this.normalfood);
+    if (snake && snake.some(snakeBody => snakeBody.x === target.x && snakeBody.y === target.y)) {
+      return CollisionResult.Snake;
+    }
+
+    return CollisionResult.Nothing;
   };
 
-  private setDirection = (newDirection: Direction) => {
+  static generateRandomCoordinate(upperBounds: { width: number, height: number }, avoids?: { food?: Coordinate, snake?: Array<Coordinate> }): Coordinate {
+    let randomCoordinate = { x: randInt(upperBounds.width), y: randInt(upperBounds.height), };
+
+    for (let i = 0; i < 20; i++) {
+      if (OfflineLogic.checkForCollision(randomCoordinate, avoids?.food, avoids?.snake) === CollisionResult.Nothing) {
+        break;
+      }
+
+      randomCoordinate = { x: randInt(upperBounds.width), y: randInt(upperBounds.height), };
+    }
+
+    return randomCoordinate;
+  }
+
+  setWidthAndHeight(this: OfflineLogic, width: number, height: number) {
+    this.config.width = width;
+    this.config.height = height;
+
+    if (this.food.x < 0 || this.food.x > this.config.width || this.food.y < 0 || this.food.y > this.config.height) {
+      this.food = OfflineLogic.generateRandomCoordinate({ width: this.config.width, height: this.config.height }, { snake: [this.head, ...this.bodies] });
+    }
+  };
+
+  setDirection(this: OfflineLogic, newDirection: Direction) {
     const oppositeDirections = {
       [Direction.Up]: Direction.Down,
       [Direction.Down]: Direction.Up,
@@ -114,7 +99,7 @@ export class OfflineLogic {
     }
   };
 
-  private setDirectionFromVelocity = () => {
+  setDirectionFromVelocity(this: OfflineLogic) {
     const vx = this.exactHead.x - this.head.x;
     const vy = this.exactHead.y - this.head.y;
 
@@ -133,7 +118,7 @@ export class OfflineLogic {
     }
   };
 
-  private applyVelocity = (velocity: Velocity) => {
+  applyVelocity(this: OfflineLogic, velocity: Velocity) {
     if (
       this.velocity === undefined ||
       this.velocity.x !== velocity.x ||
@@ -146,20 +131,7 @@ export class OfflineLogic {
     }
   };
 
-  private calculateNewFoodPosition = (value: Coordinate): Coordinate => {
-    if (
-      value.x < 0 ||
-      value.x > this.width ||
-      value.y < 0 ||
-      value.y > this.height
-    ) {
-      return this.generateRandomCoordinate(this.width, this.height);
-    }
-
-    return value;
-  };
-
-  public update = () => {
+  update(this: OfflineLogic) {
     if (this.nextVelocity !== undefined) {
       this.lastInput = Input.Velocity;
       this.applyVelocity(this.nextVelocity);
@@ -178,29 +150,29 @@ export class OfflineLogic {
     this.bodies.pop();
 
     if (this.currentDirection === Direction.Up) {
-      this.head.y -= this.gridSize;
+      this.head.y -= 1;
     } else if (this.currentDirection === Direction.Left) {
-      this.head.x -= this.gridSize;
+      this.head.x -= 1;
     } else if (this.currentDirection === Direction.Down) {
-      this.head.y += this.gridSize;
+      this.head.y += 1;
     } else if (this.currentDirection === Direction.Right) {
-      this.head.x += this.gridSize;
+      this.head.x += 1;
     }
 
     let wrappedAround = false;
 
     if (this.head.x < 0) {
-      this.head.x = this.floorToGrid(this.width);
+      this.head.x = this.config.width;
       wrappedAround = true;
-    } else if (this.head.x > this.width) {
+    } else if (this.head.x > this.config.width) {
       this.head.x = 0;
       wrappedAround = true;
     }
 
     if (this.head.y < 0) {
-      this.head.y = this.floorToGrid(this.height);
+      this.head.y = this.config.height;
       wrappedAround = true;
-    } else if (this.head.y > this.height) {
+    } else if (this.head.y > this.config.height) {
       this.head.y = 0;
       wrappedAround = true;
     }
@@ -210,18 +182,18 @@ export class OfflineLogic {
       this.exactHead.y = this.head.y;
     }
 
-    const collision = this.checkForCollision(this.head);
-    if (collision === CollisionResult.NormalFood) {
+    const collision = OfflineLogic.checkForCollision(this.head, this.food, this.bodies);
+    if (collision === CollisionResult.Food) {
       this.addLength(1);
-      this.normalfood = this.generateRandomCoordinate(this.width, this.height);
-    } else if (collision === CollisionResult.Self) {
+      this.food = OfflineLogic.generateRandomCoordinate({ width: this.config.width, height: this.config.height }, { food: this.food, snake: [this.head, ...this.bodies] });
+    } else if (collision === CollisionResult.Snake) {
       this.reset();
     }
 
     this.updatesSinceLastTurn += 1;
   };
 
-  private addLength = (amount: number) => {
+  public addLength(this: OfflineLogic, amount: number) {
     if (amount > 0) {
       const lastBody = this.bodies[this.bodies.length - 1];
       const x = lastBody !== undefined ? lastBody.x : this.head.x;
@@ -237,26 +209,18 @@ export class OfflineLogic {
     }
   };
 
-  private reset = () => {
-    this.addLength(0 - this.bodies.length);
-    this.head = this.generateRandomCoordinate(this.width, this.height);
-    this.addLength(this.startingLength);
-  }
-
-  public checkForCollision = (coordinate: Coordinate): CollisionResult => {
-    if (this.normalfood && // TODO: is there a way in typescript to avoid calling this function when it can be undefined?
-      coordinate.x === this.normalfood.x &&
-      coordinate.y === this.normalfood.y
-    ) {
-      return CollisionResult.NormalFood;
+  public setVelocity = (velocity: Velocity) => {
+    if (velocity.x === 0 && velocity.y === 0) {
+      return;
     }
 
-    if (this.bodies?.some(body => body.x === coordinate.x && body.y === coordinate.y)) {
-      console.log("self collide");
-      return CollisionResult.Self;
-    }
+    const normalizedVelocity = normalizeVelocity(velocity, 1);
 
-    return CollisionResult.Nothing;
+    if (this.nextVelocity === undefined) {
+      this.nextVelocity = normalizedVelocity;
+    } else {
+      this.nextNextVelocity = normalizedVelocity;
+    }
   };
 
   public setTarget = (target: Coordinate) => {
@@ -266,51 +230,10 @@ export class OfflineLogic {
     this.exactHead.y = target.y;
   };
 
-  public setVelocity = (velocity: Velocity) => {
-    if (velocity.x === 0 && velocity.y === 0) {
-      return;
-    }
-
-    const normalizedVelocity = normalizeVelocity(velocity, this.gridSize);
-
-    if (this.nextVelocity === undefined) {
-      this.nextVelocity = normalizedVelocity;
-    } else {
-      this.nextNextVelocity = normalizedVelocity;
-    }
-  };
-
-  private generateRandomVelocity(): Velocity {
-    return normalizeVelocity({ x: 0.0, y: 1.0 }, this.gridSize);
-  }
-
-  private floorToGrid = (pixel: number) => {
-    return Math.floor(pixel / this.gridSize) * this.gridSize;
-  }
-
-  private generateRandomCoordinate(width: number, height: number): Coordinate {
-    const randInt = (max: number) => {
-      return Math.floor(Math.random() * max);
-    };
-
-    const generateUncheckedRandomCoordinate = (): Coordinate => {
-      return {
-        x: this.floorToGrid(randInt(width)),
-        y: this.floorToGrid(randInt(height)),
-      }
-    }
-
-    let randomCoordinate = generateUncheckedRandomCoordinate();
-
-    for (let i = 0; i < 20; i++) {
-      if (this.checkForCollision(randomCoordinate) === CollisionResult.Nothing) {
-        break;
-      }
-
-      randomCoordinate = generateUncheckedRandomCoordinate();
-    }
-
-    return randomCoordinate;
+  reset(this: OfflineLogic) {
+    this.addLength(0 - this.bodies.length);
+    this.head = OfflineLogic.generateRandomCoordinate({ width: this.config.width, height: this.config.height });
+    this.addLength(this.config.startingLength);
   }
 }
 
@@ -327,4 +250,6 @@ export function normalizeVelocity(velocity: Velocity, constant: number) {
   };
 }
 
-// TODO: random coordinate calculate avoid tiles with stuff in it
+const randInt = (max: number) => {
+  return Math.floor(Math.random() * max);
+};

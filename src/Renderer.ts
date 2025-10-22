@@ -11,8 +11,8 @@ export class Renderer {
   constructor(app: Application, gridSize: number | undefined) {
     this.gridSize = gridSize ?? DEFAULT_GRID_SIZE;
 
-    this.head = this.newPixel("rgb(255, 81, 0)");
-    this.normalfood = this.newPixel("rgb(0, 156, 52)");
+    this.head = Renderer.newPixel("rgb(255, 81, 0)", this.gridSize);
+    this.normalfood = Renderer.newPixel("rgb(0, 156, 52)", this.gridSize);
 
     app.stage.addChild(this.bodies);
     app.stage.addChild(this.head);
@@ -24,8 +24,8 @@ export class Renderer {
     bodies: Array<Coordinate>,
     normalfood: Coordinate,
   ) => {
-    this.head.position.x = head.x;
-    this.head.position.y = head.y;
+    this.head.position.x = head.x * this.gridSize;
+    this.head.position.y = head.y * this.gridSize;
 
     const difference = this.bodies.children.length - bodies.length;
 
@@ -35,7 +35,7 @@ export class Renderer {
       }
     } else if (difference < 0) {
       for (let i = difference; i < 0; i++) {
-        const body = this.newPixel("gray");
+        const body = Renderer.newPixel("gray", this.gridSize);
         this.bodies.addChild(body);
       }
     }
@@ -46,22 +46,22 @@ export class Renderer {
         return;
       }
 
-      body.position.set(newBody.x, newBody.y);
+      body.position.set(newBody.x * this.gridSize, newBody.y * this.gridSize);
     });
 
     this.normalfood.position.set(normalfood.x, normalfood.y);
   };
 
-  private newPixel = (fill: FillInput) => {
+  private static newPixel = (fill: FillInput, gridSize: number) => {
     const pixel = new Graphics()
-      .rect(0, 0, this.gridSize, this.gridSize)
+      .rect(0, 0, gridSize, gridSize)
       .fill(fill)
       .stroke({
         width: 2,
         color: "gray",
       });
     pixel.alpha = 0.2;
-    pixel.position.set(0 - this.gridSize, 0 - this.gridSize);
+    pixel.position.set(0 - gridSize, 0 - gridSize);
     return pixel;
   }
 }

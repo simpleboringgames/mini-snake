@@ -1,17 +1,23 @@
-import { DEFAULT_GRID_SIZE, OfflineLogic } from "./OfflineLogic";
-import { Interaction } from "./Interaction";
+import { OfflineLogic } from "./OfflineLogic";
+// import { Interaction } from "./Interaction";
 import { Application } from "pixi.js";
 import { Renderer } from "./Renderer";
+import { Interaction } from "./Interaction";
 
 export class MiniSnakes implements Disposable {
   private app: Application = new Application();
 
+  private targetPixelSize: number = 20;
+
   private logic: OfflineLogic = new OfflineLogic({
-    width: document.documentElement.clientWidth,
-    height: document.documentElement.clientHeight
+    width: document.documentElement.clientWidth / this.targetPixelSize,
+    height: document.documentElement.clientHeight / this.targetPixelSize,
+    startingLength: 10
   });
+
   private interaction: Interaction;
-  private renderer: Renderer = new Renderer(this.app, DEFAULT_GRID_SIZE);
+
+  private renderer: Renderer = new Renderer(this.app, this.targetPixelSize);
 
   constructor() {
     this.interaction = new Interaction(
@@ -24,6 +30,8 @@ export class MiniSnakes implements Disposable {
   }
 
   [Symbol.dispose](): void {
+    window.removeEventListener("resize", this.onResize);
+
     this.interaction[Symbol.dispose]();
   }
 
@@ -57,7 +65,7 @@ export class MiniSnakes implements Disposable {
     this.renderer.set(
       this.logic.head,
       this.logic.bodies,
-      this.logic.normalfood,
+      this.logic.food,
     );
   };
 }
