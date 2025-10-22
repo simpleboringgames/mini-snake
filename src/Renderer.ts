@@ -39,9 +39,7 @@ export class Renderer {
     const difference = this.bodies.children.length - bodies.length;
 
     if (difference > 0) {
-      for (let i = 0; i < difference; i++) {
-        this.bodies.children.pop();
-      }
+      this.bodies.removeChildren();
     } else if (difference < 0) {
       for (let i = difference; i < 0; i++) {
         const body = Renderer.newPixel("gray", this.gridSize);
