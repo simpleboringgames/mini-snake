@@ -18,13 +18,13 @@ export class OfflineLogic {
 
   lastInput: Input;
 
-  velocity: Velocity | undefined;
   nextVelocity: Velocity | undefined;
   nextNextVelocity: Velocity | undefined;
 
   target: Coordinate | undefined;
 
-  currentDirection: Direction;
+  currentDirection: Direction = OfflineLogic.randomDirection();
+  velocity: Velocity = OfflineLogic.directionToVelocity(this.currentDirection);
 
   updatesSinceLastTurn: number;
 
@@ -36,7 +36,6 @@ export class OfflineLogic {
     this.bodies = Array.from({ length: this.config.startingLength }, () => ({ x: this.head.x, y: this.head.y }));
     this.food = OfflineLogic.generateRandomCoordinate({ width: this.config.width, height: this.config.height }, { snake: [this.head] });
     this.lastInput = Input.Velocity;
-    this.currentDirection = Direction.Up;
     this.updatesSinceLastTurn = 0;
   }
 
@@ -118,7 +117,6 @@ export class OfflineLogic {
 
   applyVelocity(this: OfflineLogic, velocity: Velocity) {
     if (
-      this.velocity === undefined ||
       this.velocity.x !== velocity.x ||
       this.velocity.y !== velocity.y
     ) {
@@ -207,6 +205,31 @@ export class OfflineLogic {
     }
   };
 
+  static directionToVelocity(direction: Direction): Velocity {
+    switch (direction) {
+      case Direction.Up:
+        return { x: 0, y: -1 };
+      case Direction.Down:
+        return { x: 0, y: 1 };
+      case Direction.Left:
+        return { x: -1, y: 0 };
+      case Direction.Right:
+        return { x: 1, y: 0 };
+    }
+  }
+
+  static randomDirection(): Direction {
+    const directions: Direction[] = [
+      Direction.Up,
+      Direction.Down,
+      Direction.Left,
+      Direction.Right,
+    ];
+
+    const randomIndex = Math.floor(Math.random() * directions.length);
+    return directions[randomIndex]!;
+  }
+
   public setVelocity = (velocity: Velocity) => {
     if (velocity.x === 0 && velocity.y === 0) {
       return;
@@ -241,10 +264,9 @@ export function normalizeVelocity(velocity: Velocity, constant: number) {
     return { x: 0, y: 0 };
   }
 
-  const desiredSpeed = constant;
   return {
-    x: (velocity.x / magnitude) * desiredSpeed,
-    y: (velocity.y / magnitude) * desiredSpeed,
+    x: (velocity.x / magnitude) * constant,
+    y: (velocity.y / magnitude) * constant,
   };
 }
 
