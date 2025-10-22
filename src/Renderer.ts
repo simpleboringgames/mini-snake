@@ -58,7 +58,7 @@ export class Renderer {
       body.position.set(newBody.x * gridSizeWidth, newBody.y * gridSizeHeight);
     });
 
-    this.normalfood.position.set(normalfood.x, normalfood.y);
+    this.normalfood.position.set(normalfood.x * gridSizeWidth, normalfood.y * gridSizeHeight);
   };
 
   private static newPixel = (fill: FillInput, gridSize: number) => {
