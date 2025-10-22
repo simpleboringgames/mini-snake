@@ -1,5 +1,5 @@
 import { Application, Container, Graphics, type FillInput } from "pixi.js";
-import { DEFAULT_GRID_SIZE, type Coordinate } from "./OfflineLogic";
+import { type Coordinate } from "./OfflineLogic";
 
 export class Renderer {
   private bodies: Container = new Container();
@@ -8,8 +8,8 @@ export class Renderer {
 
   private gridSize: number;
 
-  constructor(app: Application, gridSize: number | undefined) {
-    this.gridSize = gridSize ?? DEFAULT_GRID_SIZE;
+  constructor(app: Application, gridSize: number) {
+    this.gridSize = gridSize;
 
     this.head = Renderer.newPixel("rgb(255, 81, 0)", this.gridSize);
     this.normalfood = Renderer.newPixel("rgb(0, 156, 52)", this.gridSize);
@@ -24,8 +24,17 @@ export class Renderer {
     bodies: Array<Coordinate>,
     normalfood: Coordinate,
   ) => {
-    this.head.position.x = head.x * this.gridSize;
-    this.head.position.y = head.y * this.gridSize;
+    const width = document.documentElement.clientWidth;
+    const height = document.documentElement.clientHeight;
+
+    const multiplierWidth = 1 + width % this.gridSize / width;
+    const multiplierHeight = 1 + height % this.gridSize / height;
+
+    const gridSizeWidth = multiplierWidth * this.gridSize;
+    const gridSizeHeight = multiplierHeight * this.gridSize;
+
+    this.head.position.x = head.x * gridSizeWidth;
+    this.head.position.y = head.y * gridSizeHeight;
 
     const difference = this.bodies.children.length - bodies.length;
 
@@ -46,7 +55,7 @@ export class Renderer {
         return;
       }
 
-      body.position.set(newBody.x * this.gridSize, newBody.y * this.gridSize);
+      body.position.set(newBody.x * gridSizeWidth, newBody.y * gridSizeHeight);
     });
 
     this.normalfood.position.set(normalfood.x, normalfood.y);

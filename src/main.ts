@@ -10,8 +10,8 @@ export class MiniSnakes implements Disposable {
   private targetPixelSize: number = 20;
 
   private logic: OfflineLogic = new OfflineLogic({
-    width: document.documentElement.clientWidth / this.targetPixelSize,
-    height: document.documentElement.clientHeight / this.targetPixelSize,
+    width: MiniSnakes.calculateWidth(this.targetPixelSize),
+    height: MiniSnakes.calculateHeight(this.targetPixelSize),
     startingLength: 10
   });
 
@@ -35,10 +35,18 @@ export class MiniSnakes implements Disposable {
     this.interaction[Symbol.dispose]();
   }
 
+  static calculateWidth(targetPixelSize: number): number {
+    return (document.documentElement.clientWidth / targetPixelSize) - 1;
+  }
+
+  static calculateHeight(targetPixelSize: number): number {
+    return (document.documentElement.clientHeight / targetPixelSize) - 1;
+  }
+
   private onResize = () => {
     this.logic.setWidthAndHeight(
-      document.documentElement.clientWidth,
-      document.documentElement.clientHeight
+      MiniSnakes.calculateWidth(this.targetPixelSize),
+      MiniSnakes.calculateHeight(this.targetPixelSize),
     );
   };
 

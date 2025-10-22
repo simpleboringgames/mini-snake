@@ -1,5 +1,3 @@
-export const DEFAULT_GRID_SIZE = 20;
-export const DEFAULT_STARTING_LENGTH = 10;
 export type Coordinate = { x: number; y: number; };
 export type Config = { width: number; height: number; startingLength: number }
 export type SnakeBody = Coordinate;
@@ -162,7 +160,7 @@ export class OfflineLogic {
     let wrappedAround = false;
 
     if (this.head.x < 0) {
-      this.head.x = this.config.width;
+      this.head.x = Math.floor(this.config.width);
       wrappedAround = true;
     } else if (this.head.x > this.config.width) {
       this.head.x = 0;
@@ -170,7 +168,7 @@ export class OfflineLogic {
     }
 
     if (this.head.y < 0) {
-      this.head.y = this.config.height;
+      this.head.y = Math.floor(this.config.height);
       wrappedAround = true;
     } else if (this.head.y > this.config.height) {
       this.head.y = 0;
