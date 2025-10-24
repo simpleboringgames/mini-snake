@@ -7,9 +7,14 @@ export class Renderer {
   private normalfood;
 
   private gridSize: number;
+  private width: number;
+  private height: number;
 
-  constructor(app: Application, gridSize: number) {
+
+  constructor(app: Application, gridSize: number, width: number, height: number) {
     this.gridSize = gridSize;
+    this.width = width;
+    this.height = height;
 
     this.head = Renderer.newPixel("rgb(255, 81, 0)", this.gridSize);
     this.normalfood = Renderer.newPixel("rgb(0, 156, 52)", this.gridSize);
@@ -19,16 +24,18 @@ export class Renderer {
     app.stage.addChild(this.normalfood);
   }
 
+  public setWidthAndHeight = (width: number, height: number) => {
+    this.width = width;
+    this.height = height;
+  }
+
   public set = (
     head: Coordinate,
     bodies: Array<Coordinate>,
     normalfood: Coordinate,
   ) => {
-    const width = document.documentElement.clientWidth;
-    const height = document.documentElement.clientHeight;
-
-    const multiplierWidth = 1 + width % this.gridSize / width;
-    const multiplierHeight = 1 + height % this.gridSize / height;
+    const multiplierWidth = 1 + this.width % this.gridSize / this.width;
+    const multiplierHeight = 1 + this.height % this.gridSize / this.height;
 
     const gridSizeWidth = multiplierWidth * this.gridSize;
     const gridSizeHeight = multiplierHeight * this.gridSize;

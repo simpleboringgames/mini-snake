@@ -8,17 +8,19 @@ export class MiniSnakes implements Disposable {
 
   private targetPixelSize: number = 20;
 
-  private logic: OfflineLogic = new OfflineLogic({
-    width: MiniSnakes.calculateWidth(this.targetPixelSize),
-    height: MiniSnakes.calculateHeight(this.targetPixelSize),
-    startingLength: 10
-  });
+  private logic: OfflineLogic;
 
   private interaction: Interaction;
 
-  private renderer: Renderer = new Renderer(this.app, this.targetPixelSize);
+  private renderer: Renderer;
 
   constructor() {
+    const rendererDimensions = MiniSnakes.calculateRendererDimensions();
+    this.renderer = new Renderer(this.app, this.targetPixelSize, rendererDimensions.width, rendererDimensions.height);
+
+    const logicDimensions = MiniSnakes.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
+    this.logic = new OfflineLogic({ width: logicDimensions.width, height: logicDimensions.height, startingLength: 10 });
+
     this.interaction = new Interaction(
       this.logic.head,
       this.logic.setVelocity,
@@ -34,25 +36,29 @@ export class MiniSnakes implements Disposable {
     this.interaction[Symbol.dispose]();
   }
 
-  static calculateWidth(targetPixelSize: number): number {
-    return (document.documentElement.clientWidth / targetPixelSize) - 1;
+  static calculateRendererDimensions(): { width: number, height: number } {
+    const fullScreenGameDiv = document.getElementById("full-screen-game")!;
+    return { width: fullScreenGameDiv.clientWidth, height: fullScreenGameDiv.clientHeight };
   }
 
-  static calculateHeight(targetPixelSize: number): number {
-    return (document.documentElement.clientHeight / targetPixelSize) - 1;
+  static calculateLogicDimensions(rendererDimensions: { width: number, height: number }, targetPixelSize: number): { width: number, height: number } {
+    return { width: (rendererDimensions.width / targetPixelSize) - 1, height: (rendererDimensions.height / targetPixelSize) - 1 };
   }
 
   private onResize = () => {
-    this.logic.setWidthAndHeight(
-      MiniSnakes.calculateWidth(this.targetPixelSize),
-      MiniSnakes.calculateHeight(this.targetPixelSize),
-    );
+    const rendererDimensions = MiniSnakes.calculateRendererDimensions();
+    const logicDimensions = MiniSnakes.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
+
+    this.renderer.setWidthAndHeight(rendererDimensions.width, rendererDimensions.height);
+    this.logic.setWidthAndHeight(logicDimensions.width, logicDimensions.height);
   };
 
   async init() {
+    const fullScreenGameDiv = document.getElementById("full-screen-game")!;
+
     await this.app.init({
       backgroundAlpha: 0,
-      resizeTo: document.documentElement,
+      resizeTo: fullScreenGameDiv,
       autoDensity: true,
       resolution: window.devicePixelRatio,
       antialias: false,
@@ -63,7 +69,7 @@ export class MiniSnakes implements Disposable {
     this.app.start();
     this.app.ticker.add(this.onTick);
 
-    document.body.appendChild(this.app.canvas);
+    fullScreenGameDiv.appendChild(this.app.canvas);
     this.onTick();
   }
 

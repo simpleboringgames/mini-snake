@@ -1,5 +1,5 @@
 html {
-  margin: 2vw;
+  padding: 2vw;
   scrollbar-gutter: stable;
   font-family: monospace;
 }
@@ -19,6 +19,15 @@ body {
   --c2: #ffffff;
   background-image: url("data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg' width='600' height='120'> <text x='0' y='20' font-size='20' font-family='monospace' opacity='0.03'><tspan x='0' dy='0'>48692C2074686573652061726520736F6D6520776F72647320746F</tspan><tspan x='0' dy='20'>206D616B65206D79206261636B67726F756E64206C6F6F6B2067</tspan>\<tspan x='0' dy='20'>6F6F642C20706C6561736520646F6E27742074727920746F2074</tspan><tspan x='0' dy='20'>72616E736C6174652074686973206261636B20746F20456E676C</tspan><tspan x='0' dy='20'>697368206265636175736520796F752077696C6C206265207375</tspan><tspan x='0' dy='20'>706572206469736170706F696E74656420746861742049206469</tspan><tspan x='0' dy='20'>646E27742070757420736F6D652073656372657420636F64652E</tspan></text></svg>");
   background-repeat: repeat;
+}
+
+#full-screen-game {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
 }
 
 #right {
@@ -80,8 +89,6 @@ canvas {
   left: 0;
   display: block;
 
-  width: 100vw;
-  height: 100vh;
   overflow: hidden;
   justify-content: center;
   align-items: center;

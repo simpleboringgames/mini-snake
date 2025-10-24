@@ -7,7 +7,8 @@ import { defineConfig } from "eslint/config";
 export default defineConfig([
   globalIgnores(["dist"]),
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ["**/*.{ts,tsx,js,mjs}"],
+    ignores: ["**/external/**"],
     extends: [js.configs.recommended, tseslint.configs.recommended],
     languageOptions: {
       ecmaVersion: 2020,

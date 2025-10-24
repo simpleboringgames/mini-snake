@@ -4,8 +4,10 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: () => 'everything',
+        inlineDynamicImports: true,
+        manualChunks: undefined,
       },
+      treeshake: "smallest"
     },
   },
   server: {
