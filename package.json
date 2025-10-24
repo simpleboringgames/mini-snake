@@ -7,7 +7,7 @@
     "start": "npm run dev",
     "build": "npm run lint && tsc && vite build",
     "watch": "vite build --watch",
-    "lint": "",
+    "lint": "eslint .",
     "test": "vitest",
     "dev": "vite"
   },
