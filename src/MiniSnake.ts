@@ -3,7 +3,7 @@ import { Application } from "pixi.js";
 import { Renderer } from "./Renderer";
 import { Interaction } from "./Interaction";
 
-export class MiniSnakes implements Disposable {
+export class MiniSnake implements Disposable {
   private app: Application = new Application();
 
   private targetPixelSize: number = 20;
@@ -15,10 +15,10 @@ export class MiniSnakes implements Disposable {
   private renderer: Renderer;
 
   constructor() {
-    const rendererDimensions = MiniSnakes.calculateRendererDimensions();
+    const rendererDimensions = MiniSnake.calculateRendererDimensions();
     this.renderer = new Renderer(this.app, this.targetPixelSize, rendererDimensions.width, rendererDimensions.height);
 
-    const logicDimensions = MiniSnakes.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
+    const logicDimensions = MiniSnake.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
     this.logic = new OfflineLogic({ width: logicDimensions.width, height: logicDimensions.height, startingLength: 10 });
 
     this.interaction = new Interaction(
@@ -46,8 +46,8 @@ export class MiniSnakes implements Disposable {
   }
 
   private onResize = () => {
-    const rendererDimensions = MiniSnakes.calculateRendererDimensions();
-    const logicDimensions = MiniSnakes.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
+    const rendererDimensions = MiniSnake.calculateRendererDimensions();
+    const logicDimensions = MiniSnake.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
 
     this.renderer.setWidthAndHeight(rendererDimensions.width, rendererDimensions.height);
     this.logic.setWidthAndHeight(logicDimensions.width, logicDimensions.height);

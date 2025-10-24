@@ -1,6 +1,6 @@
-import { MiniSnakes } from './main';
+import { MiniSnake } from './MiniSnake';
 
 (async () => {
-    const miniSnakes = new MiniSnakes();
+    const miniSnakes = new MiniSnake();
     await miniSnakes.init();
 })();
