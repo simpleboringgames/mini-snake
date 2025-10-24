@@ -1,5 +1,5 @@
 import { OfflineLogic } from "./OfflineLogic";
-import { Application } from "pixi.js";
+import { Application } from "./external/pixi.js";
 import { Renderer } from "./Renderer";
 import { Interaction } from "./Interaction";
 

@@ -1,4 +1,4 @@
-import { Application, Container, Graphics, type FillInput } from "pixi.js";
+import { Application, Container, Graphics, type FillInput } from "./external/pixi.js";
 import { type Coordinate } from "./OfflineLogic";
 
 export class Renderer {
