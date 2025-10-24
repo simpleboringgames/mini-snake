@@ -83,8 +83,4 @@ export class MiniSnakes implements Disposable {
   };
 }
 
-(async () => {
-  const miniSnakes = new MiniSnakes();
-  await miniSnakes.init();
-})();
 
