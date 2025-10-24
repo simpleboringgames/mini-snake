@@ -6,8 +6,10 @@ I made this game to make the landing page of Simple Boring Games (https://simple
 
 ## Consuming the library
 
-Good question, I have to figure this out myself
-
+I have not set up a build pipeline and proper packaging yet so the best way to consume is:
+```
+pnpm install github:simpleboringgames/mini-snake#0.3.0
+```
 ## Building the library
 
 ```
