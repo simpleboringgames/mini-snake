@@ -1,6 +1,6 @@
 {
   "name": "mini-snake",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -29,5 +29,35 @@
     "typescript-eslint": "^8.39.1",
     "vite": "^6.2.0",
     "vitest": "^3.2.4"
-  }
+  },
+  "sideEffects": [
+    "./external/pixi.js/environment-browser/browserAll.*",
+    "./external/pixi.js/environment-webworker/webworkerAll.*",
+    "./external/pixi.js/index.*",
+    "./external/pixi.js/rendering/init.*",
+    "./external/pixi.js/spritesheet/init.*",
+    "./external/pixi.js/rendering/renderers/shared/texture/utils/textureFrom.*",
+    "./external/pixi.js/gif/init.*",
+    "./external/pixi.js/accessibility/init.*",
+    "./external/pixi.js/advanced-blend-modes/init.*",
+    "./external/pixi.js/app/init.*",
+    "./external/pixi.js/compressed-textures/dds/init.*",
+    "./external/pixi.js/compressed-textures/ktx/init.*",
+    "./external/pixi.js/compressed-textures/ktx2/init.*",
+    "./external/pixi.js/compressed-textures/basis/init.*",
+    "./external/pixi.js/events/init.*",
+    "./external/pixi.js/dom/init.*",
+    "./external/pixi.js/filters/init.*",
+    "./external/pixi.js/math-extras/init.*",
+    "./external/pixi.js/scene/sprite-tiling/init.*",
+    "./external/pixi.js/scene/text/init.*",
+    "./external/pixi.js/scene/text-bitmap/init.*",
+    "./external/pixi.js/scene/text-html/init.*",
+    "./external/pixi.js/scene/graphics/init.*",
+    "./external/pixi.js/scene/mesh/init.*",
+    "./external/pixi.js/prepare/init.*",
+    "./external/pixi.js/unsafe-eval/init.*",
+    "./external/pixi.js/scene/sprite-nine-slice/init.*",
+    "./external/pixi.js/scene/particle-container/init.*"
+  ]
 }
