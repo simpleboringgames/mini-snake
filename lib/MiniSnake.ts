@@ -92,7 +92,7 @@ export class MiniSnake implements Disposable {
   };
 
   private onPointerMove = (pointerEvent: PointerEvent) => {
-    this.logic.setTarget({ x: pointerEvent.x / this.logicDimensions.width, y: pointerEvent.y / this.logicDimensions.height });
+    this.logic.setTarget({ x: pointerEvent.x / this.targetPixelSize, y: pointerEvent.y / this.targetPixelSize });
   };
 }
 
