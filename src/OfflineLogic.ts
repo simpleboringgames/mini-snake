@@ -1,5 +1,6 @@
 export type Coordinate = { x: number; y: number; };
-export type Config = { width: number; height: number; startingLength: number }
+export type Dimensions = { width: number; height: number };
+export type Config = { dimensions: Dimensions; startingLength: number }
 export type SnakeBody = Coordinate;
 export type Food = Coordinate;
 export type Velocity = { x: number; y: number };
@@ -31,10 +32,10 @@ export class OfflineLogic {
   constructor(config: Config) {
     this.config = config;
 
-    this.head = OfflineLogic.generateRandomCoordinate({ width: this.config.width, height: this.config.height });
+    this.head = OfflineLogic.generateRandomCoordinate({ width: this.config.dimensions.width, height: this.config.dimensions.height });
     this.exactHead = { x: this.head.x, y: this.head.y }
     this.bodies = Array.from({ length: this.config.startingLength }, () => ({ x: this.head.x, y: this.head.y }));
-    this.food = OfflineLogic.generateRandomCoordinate({ width: this.config.width, height: this.config.height }, { snake: [this.head] });
+    this.food = OfflineLogic.generateRandomCoordinate({ width: this.config.dimensions.width, height: this.config.dimensions.height }, { snake: [this.head] });
     this.lastInput = Input.Velocity;
     this.updatesSinceLastTurn = 0;
   }
@@ -51,27 +52,32 @@ export class OfflineLogic {
     return CollisionResult.Nothing;
   };
 
-  static generateRandomCoordinate(upperBounds: { width: number, height: number }, avoids?: { food?: Coordinate, snake?: Array<Coordinate> }): Coordinate {
-    let randomCoordinate = { x: randInt(upperBounds.width), y: randInt(upperBounds.height), };
+  static generateRandomCoordinate(within: Dimensions, avoids?: { food?: Coordinate, snake?: Array<Coordinate> }): Coordinate {
+    let randomCoordinate = { x: randInt(within.width), y: randInt(within.height), };
 
     for (let i = 0; i < 20; i++) {
       if (OfflineLogic.checkForCollision(randomCoordinate, avoids?.food, avoids?.snake) === CollisionResult.Nothing) {
         break;
       }
 
-      randomCoordinate = { x: randInt(upperBounds.width), y: randInt(upperBounds.height), };
+      randomCoordinate = { x: randInt(within.width), y: randInt(within.height), };
     }
 
     return randomCoordinate;
   }
 
-  setWidthAndHeight(this: OfflineLogic, width: number, height: number) {
-    this.config.width = width;
-    this.config.height = height;
+  set dimensions(dimensions: Dimensions) {
+    this.config.dimensions = dimensions;
 
-    if (this.food.x < 0 || this.food.x > this.config.width || this.food.y < 0 || this.food.y > this.config.height) {
-      this.food = OfflineLogic.generateRandomCoordinate({ width: this.config.width, height: this.config.height }, { snake: [this.head, ...this.bodies] });
+    if (this.food.x < 0 || this.food.x > this.config.dimensions.width || this.food.y < 0 || this.food.y > this.config.dimensions.height) {
+      this.food = OfflineLogic.generateRandomCoordinate(this.config.dimensions, { snake: [this.head, ...this.bodies] });
     }
+  }
+  setWidthAndHeight(this: OfflineLogic, width: number, height: number) {
+    this.config.dimensions.width = width;
+    this.config.dimensions.height = height;
+
+
   };
 
   setDirection(this: OfflineLogic, newDirection: Direction) {
@@ -158,17 +164,17 @@ export class OfflineLogic {
     let wrappedAround = false;
 
     if (this.head.x < 0) {
-      this.head.x = Math.floor(this.config.width);
+      this.head.x = Math.floor(this.config.dimensions.width);
       wrappedAround = true;
-    } else if (this.head.x > this.config.width) {
+    } else if (this.head.x > this.config.dimensions.width) {
       this.head.x = 0;
       wrappedAround = true;
     }
 
     if (this.head.y < 0) {
-      this.head.y = Math.floor(this.config.height);
+      this.head.y = Math.floor(this.config.dimensions.height);
       wrappedAround = true;
-    } else if (this.head.y > this.config.height) {
+    } else if (this.head.y > this.config.dimensions.height) {
       this.head.y = 0;
       wrappedAround = true;
     }
@@ -181,7 +187,7 @@ export class OfflineLogic {
     const collision = OfflineLogic.checkForCollision(this.head, this.food, this.bodies);
     if (collision === CollisionResult.Food) {
       this.addLength(1);
-      this.food = OfflineLogic.generateRandomCoordinate({ width: this.config.width, height: this.config.height }, { food: this.food, snake: [this.head, ...this.bodies] });
+      this.food = OfflineLogic.generateRandomCoordinate({ width: this.config.dimensions.width, height: this.config.dimensions.height }, { food: this.food, snake: [this.head, ...this.bodies] });
     } else if (collision === CollisionResult.Snake) {
       this.reset();
     }
@@ -191,7 +197,7 @@ export class OfflineLogic {
     return {
       added: {
         x: this.head.x,
-        y: this.head.x
+        y: this.head.y
       },
       modified: {
         x: 0,
@@ -268,7 +274,7 @@ export class OfflineLogic {
 
   reset(this: OfflineLogic) {
     this.addLength(0 - this.bodies.length);
-    this.head = OfflineLogic.generateRandomCoordinate({ width: this.config.width, height: this.config.height });
+    this.head = OfflineLogic.generateRandomCoordinate({ width: this.config.dimensions.width, height: this.config.dimensions.height });
     this.addLength(this.config.startingLength);
   }
 }

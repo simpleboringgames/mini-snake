@@ -1,10 +1,9 @@
 import { MiniSnake } from './MiniSnake';
 
 (async () => {
-    const miniSnake = new MiniSnake();
+    const snakePlayArea = MiniSnake.createFullScreenOverlay();
+    document.documentElement.appendChild(snakePlayArea);
 
-    const fullScreen = MiniSnake.createFullScreenOverlay();
-    document.documentElement.appendChild(fullScreen);
-
-    miniSnake.attachTo(fullScreen);
+    const miniSnake = new MiniSnake(snakePlayArea);
+    miniSnake.start();
 })();

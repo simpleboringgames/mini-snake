@@ -1,36 +1,50 @@
-import { type Coordinate } from "./OfflineLogic";
+import { type Coordinate, type Dimensions } from "./OfflineLogic";
 
 export class Renderer {
   private gridSize: number;
-  private width_: number = 0;
-  private height_: number = 0;
   private ctx: CanvasRenderingContext2D;
   private canvas_: HTMLCanvasElement;
 
-  constructor(gridSize: number) {
+  constructor(gridSize: number, dimensions: Dimensions) {
     this.gridSize = gridSize;
+    
     const canvas = document.createElement('canvas');
-	  canvas.style.cssText = `position:fixed;top:0;left:0;display:block;width:${this.width_}px;height:${this.height_}px`;
+
+	  canvas.style.cssText = `position:fixed;top:0;left:0;display:block;`;
     const ctx = canvas.getContext("2d");
     if (ctx === null) {
       throw new TypeError("Mini Snake canvas context unexpectedly null");
     }
-    ctx.fillRect(0, 0, 100, 100);
 
     this.canvas_ = canvas;
     this.ctx = ctx;
+
+    this.canvas.width = dimensions.width * window.devicePixelRatio;
+    this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    this.canvas.style.width = `${dimensions.width}px`;
+
+    this.canvas.height = dimensions.height * window.devicePixelRatio;
+    this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    this.canvas.style.height = `${dimensions.height}px`;
+
+    ctx.fillStyle = "red";
+    ctx.fillRect(0, 0, 100, 100);
   }
 
   get canvas() {
     return this.canvas_;
   }
 
-  set width(width: number) {
-    this.width_ = width;
-  }
+  set dimensions(dimensions: Dimensions) {
+    this.canvas.width = dimensions.width * window.devicePixelRatio;
+    this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    this.canvas.width = dimensions.width;
 
-  set height(height: number) {
-    this.height_ = height;
+    this.canvas.height = dimensions.height * window.devicePixelRatio;
+    this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    this.canvas.height = dimensions.height;
+
+    this.ctx.fillRect(0, 0, dimensions.width, dimensions.height);
   }
 
   public draw = (head: Coordinate, body: Coordinate, remove: Coordinate) => {

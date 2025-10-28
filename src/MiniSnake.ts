@@ -1,4 +1,4 @@
-import { OfflineLogic } from "./OfflineLogic";
+import { OfflineLogic, type Dimensions } from "./OfflineLogic";
 import { Renderer } from "./Renderer";
 import { Interaction } from "./Interaction";
 
@@ -10,35 +10,33 @@ export class MiniSnake implements Disposable {
   private targetFps = 10;
   private targetFrameDuration = 1000 / this.targetFps;
   private lastFrameTime = 0;
-  private attachedToElement : HTMLElement | undefined;
+  private playArea : HTMLElement;
 
-  constructor() {
-    const rendererDimensions = MiniSnake.calculateRendererDimensions();
-    this.renderer = new Renderer(this.targetPixelSize);
+  constructor(playArea: HTMLElement) {
+    this.playArea = playArea;
+    const rendererDimensions = MiniSnake.calculateRendererDimensions(this.playArea);
+    this.renderer = new Renderer(this.targetPixelSize, rendererDimensions);
 
     const logicDimensions = MiniSnake.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
-    this.logic = new OfflineLogic({ width: logicDimensions.width, height: logicDimensions.height, startingLength: 10 });
+    this.logic = new OfflineLogic({ dimensions: logicDimensions, startingLength: 10 });
 
     this.interaction = new Interaction(
       this.logic.head,
       this.logic.setVelocity,
       this.logic.setTarget
     );
+
+    playArea.appendChild(this.renderer.canvas);
+    this.playArea?.addEventListener("resize", this.onResize);
   }
 
   [Symbol.dispose](): void {
     this.interaction[Symbol.dispose]();
-
-    this.attachedToElement?.removeEventListener("resize", this.onResize);
+    this.playArea?.removeEventListener("resize", this.onResize);
   }
 
   get canvas() {
     return this.renderer.canvas;
-  }
-
-  public attachTo(element: HTMLElement) {
-    this.attachedToElement = element;
-    this.attachedToElement.addEventListener("resize", this.onResize)
   }
 
   public start () {
@@ -63,23 +61,23 @@ export class MiniSnake implements Disposable {
 
   public static createFullScreenOverlay() : HTMLElement {
     const fullScreenElement = document.createElement('div');
+    fullScreenElement.style.cssText = "position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;";
     return fullScreenElement;
   }
 
-  static calculateRendererDimensions(): { width: number, height: number } {
-    return { width: document.body.clientWidth, height: document.body.clientHeight };
+  static calculateRendererDimensions(playArea: HTMLElement): Dimensions {
+    return { width: playArea.clientWidth, height: playArea.clientHeight };
   }
 
-  static calculateLogicDimensions(rendererDimensions: { width: number, height: number }, targetPixelSize: number): { width: number, height: number } {
+  static calculateLogicDimensions(rendererDimensions: Dimensions, targetPixelSize: number): Dimensions {
     return { width: (rendererDimensions.width / targetPixelSize) - 1, height: (rendererDimensions.height / targetPixelSize) - 1 };
   }
 
   private onResize = () => {
-    const rendererDimensions = MiniSnake.calculateRendererDimensions();
+    const rendererDimensions = MiniSnake.calculateRendererDimensions(this.playArea);
     const logicDimensions = MiniSnake.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
 
-    this.renderer.width = rendererDimensions.width;
-    this.renderer.height = rendererDimensions.height;
+    this.renderer.dimensions = rendererDimensions;
     this.logic.setWidthAndHeight(logicDimensions.width, logicDimensions.height);
   };
 }
