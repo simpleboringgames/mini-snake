@@ -4,7 +4,7 @@ export type Config = { dimensions: Dimensions; startingLength: number }
 export type SnakeBody = Coordinate;
 export type Food = Coordinate;
 export type Velocity = { x: number; y: number };
-export type AlteredPieces = { head: Coordinate; bodyAdded: Array<Coordinate>; bodyRemoved: Array<Coordinate>; };
+export type AlteredPieces = { head: Coordinate, bodyStart: Coordinate | undefined, bodyRemoved: Coordinate | undefined };
 export enum Direction { Up, Left, Down, Right, }
 enum Input { Target, Velocity, }
 enum CollisionResult { Nothing, Snake, Food, }
@@ -133,7 +133,7 @@ export class OfflineLogic {
     }
   };
 
-  update(this: OfflineLogic) : { added: Coordinate, modified: Coordinate, removed: Coordinate } {
+  update(this: OfflineLogic) : AlteredPieces {
     if (this.nextVelocity !== undefined) {
       this.lastInput = Input.Velocity;
       this.applyVelocity(this.nextVelocity);
@@ -148,8 +148,9 @@ export class OfflineLogic {
 
     this.setDirectionFromVelocity();
 
-    this.bodies.unshift({ x: this.head.x, y: this.head.y });
-    this.bodies.pop();
+    const bodyStart = { x: this.head.x, y: this.head.y };
+    this.bodies.unshift(bodyStart);
+    const bodyRemoved = this.bodies.pop();
 
     if (this.currentDirection === Direction.Up) {
       this.head.y -= 1;
@@ -195,18 +196,12 @@ export class OfflineLogic {
     this.updatesSinceLastTurn += 1;
 
     return {
-      added: {
+      head: {
         x: this.head.x,
         y: this.head.y
       },
-      modified: {
-        x: 0,
-        y: 0
-      },
-      removed: {
-        x: 0,
-        y: 0
-      }
+      bodyStart,
+      bodyRemoved
     }
   };
 

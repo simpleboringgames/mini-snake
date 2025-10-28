@@ -52,11 +52,7 @@ export class MiniSnake implements Disposable {
     }
     this.lastFrameTime = timestamp - (delta % this.targetFrameDuration);
     const changes = this.logic.update();
-    this.renderer.draw(
-      changes.added,
-      changes.modified,
-      changes.removed,
-    );
+    this.renderer.draw(changes);
   }
 
   public static createFullScreenOverlay() : HTMLElement {
