@@ -1,4 +1,4 @@
-import { MiniSnake } from './MiniSnake';
+import { MiniSnake } from '../lib/MiniSnake';
 
 (async () => {
     const snakePlayArea = MiniSnake.createFullScreenOverlay();

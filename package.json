@@ -1,8 +1,9 @@
 {
   "name": "mini-snake",
   "version": "0.3.0",
-  "private": true,
+  "private": false,
   "type": "module",
+  "module": "./dist/MiniSnake.ts",
   "scripts": {
     "start": "npm run dev",
     "build": "npm run lint && tsc && vite build",
@@ -14,6 +15,8 @@
   "devDependencies": {
     "@eslint/js": "^9.33.0",
     "@pixi/colord": "^2.9.6",
+    "@types/node": "^24.9.2",
+    "@types/webpack-env": "^1.18.8",
     "@xmldom/xmldom": "^0.8.11",
     "earcut": "^3.0.2",
     "eslint": "^9.33.0",
@@ -24,6 +27,7 @@
     "ismobilejs": "^1.1.1",
     "parse-svg-path": "^0.1.2",
     "prettier": "^3.5.3",
+    "terser": "^5.44.0",
     "tiny-lru": "^11.4.5",
     "typescript": "~5.7.3",
     "typescript-eslint": "^8.39.1",

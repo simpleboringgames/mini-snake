@@ -63,7 +63,5 @@ export class Renderer {
       this.ctx.fillRect(alteredPieces.bodyStart.x * this.gridSize + 1, alteredPieces.bodyStart.y * this.gridSize + 1, this.gridSize - 2, this.gridSize - 2);
       this.ctx.strokeRect(alteredPieces.bodyStart.x * this.gridSize + 1, alteredPieces.bodyStart.y * this.gridSize + 1, this.gridSize - 2, this.gridSize - 2);
     }
-
-
   };
 }

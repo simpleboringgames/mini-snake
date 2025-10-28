@@ -1,14 +1,18 @@
 import { defineConfig } from "vite";
+import { resolve } from 'path';
 
 export default defineConfig({
   build: {
+    lib: {
+      entry: resolve(__dirname, 'lib/MiniSnake.ts'),
+      name: "MiniSnake",
+      fileName: "mini-snake"
+    },
+    modulePreload: false,
     rollupOptions: {
-      output: {
-        inlineDynamicImports: true,
-        manualChunks: undefined,
-      },
       treeshake: "smallest"
     },
+    minify: "terser"
   },
   server: {
     port: 8080,
