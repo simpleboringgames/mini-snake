@@ -52,7 +52,7 @@ export class OfflineLogic {
     return CollisionResult.Nothing;
   };
 
-  static generateRandomCoordinate(within: Dimensions, avoids?: { food?: Coordinate, snake?: Array<Coordinate> }): Coordinate {
+  private static generateRandomCoordinate(within: Dimensions, avoids?: { food?: Coordinate, snake?: Array<Coordinate> }): Coordinate {
     let randomCoordinate = { x: randInt(within.width), y: randInt(within.height), };
 
     for (let i = 0; i < 20; i++) {
@@ -76,8 +76,6 @@ export class OfflineLogic {
   setWidthAndHeight(this: OfflineLogic, width: number, height: number) {
     this.config.dimensions.width = width;
     this.config.dimensions.height = height;
-
-
   };
 
   setDirection(this: OfflineLogic, newDirection: Direction) {
