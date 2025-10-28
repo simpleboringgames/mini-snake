@@ -83,7 +83,7 @@ a[target="_blank"]::after {
   vertical-align: text-top;
 }
 
-canvas {
+/* canvas {
   position: fixed;
   top: 0;
   left: 0;
@@ -93,7 +93,7 @@ canvas {
   justify-content: center;
   align-items: center;
   z-index: -1;
-}
+} */
 
 header,
 main {

@@ -190,8 +190,8 @@ export class OfflineLogic {
 
     return {
       added: {
-        x: 0,
-        y: 0
+        x: this.head.x,
+        y: this.head.x
       },
       modified: {
         x: 0,

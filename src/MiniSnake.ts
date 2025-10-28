@@ -1,10 +1,8 @@
 import { OfflineLogic } from "./OfflineLogic";
-import { Application } from "./external/pixi.js";
 import { Renderer } from "./Renderer";
 import { Interaction } from "./Interaction";
 
 export class MiniSnake implements Disposable {
-  private app: Application = new Application();
   private targetPixelSize: number = 20;
   private logic: OfflineLogic;
   private interaction: Interaction;
@@ -12,10 +10,11 @@ export class MiniSnake implements Disposable {
   private targetFps = 10;
   private targetFrameDuration = 1000 / this.targetFps;
   private lastFrameTime = 0;
+  private attachedToElement : HTMLElement | undefined;
 
   constructor() {
     const rendererDimensions = MiniSnake.calculateRendererDimensions();
-    this.renderer = new Renderer(this.app, this.targetPixelSize, rendererDimensions.width, rendererDimensions.height);
+    this.renderer = new Renderer(this.targetPixelSize);
 
     const logicDimensions = MiniSnake.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
     this.logic = new OfflineLogic({ width: logicDimensions.width, height: logicDimensions.height, startingLength: 10 });
@@ -25,14 +24,21 @@ export class MiniSnake implements Disposable {
       this.logic.setVelocity,
       this.logic.setTarget
     );
-
-    window.addEventListener("resize", this.onResize);
   }
 
   [Symbol.dispose](): void {
-    window.removeEventListener("resize", this.onResize);
-
     this.interaction[Symbol.dispose]();
+
+    this.attachedToElement?.removeEventListener("resize", this.onResize);
+  }
+
+  get canvas() {
+    return this.renderer.canvas;
+  }
+
+  public attachTo(element: HTMLElement) {
+    this.attachedToElement = element;
+    this.attachedToElement.addEventListener("resize", this.onResize)
   }
 
   public start () {
@@ -47,11 +53,21 @@ export class MiniSnake implements Disposable {
       return;
     }
     this.lastFrameTime = timestamp - (delta % this.targetFrameDuration);
+    const changes = this.logic.update();
+    this.renderer.draw(
+      changes.added,
+      changes.modified,
+      changes.removed,
+    );
+  }
+
+  public static createFullScreenOverlay() : HTMLElement {
+    const fullScreenElement = document.createElement('div');
+    return fullScreenElement;
   }
 
   static calculateRendererDimensions(): { width: number, height: number } {
-    const fullScreenGameDiv = document.getElementById("full-screen-game")!;
-    return { width: fullScreenGameDiv.clientWidth, height: fullScreenGameDiv.clientHeight };
+    return { width: document.body.clientWidth, height: document.body.clientHeight };
   }
 
   static calculateLogicDimensions(rendererDimensions: { width: number, height: number }, targetPixelSize: number): { width: number, height: number } {
@@ -62,37 +78,9 @@ export class MiniSnake implements Disposable {
     const rendererDimensions = MiniSnake.calculateRendererDimensions();
     const logicDimensions = MiniSnake.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
 
-    this.renderer.setWidthAndHeight(rendererDimensions.width, rendererDimensions.height);
+    this.renderer.width = rendererDimensions.width;
+    this.renderer.height = rendererDimensions.height;
     this.logic.setWidthAndHeight(logicDimensions.width, logicDimensions.height);
-  };
-
-  async init() {
-    const fullScreenGameDiv = document.getElementById("full-screen-game")!;
-
-    await this.app.init({
-      backgroundAlpha: 0,
-      resizeTo: fullScreenGameDiv,
-      autoDensity: true,
-      resolution: window.devicePixelRatio,
-      antialias: false,
-      autoStart: false,
-    });
-
-    this.app.ticker.maxFPS = 10;
-    this.app.start();
-    this.app.ticker.add(this.onTick);
-
-    fullScreenGameDiv.appendChild(this.app.canvas);
-    this.onTick();
-  }
-
-  public onTick = () => {
-    this.logic.update();
-    this.renderer.set(
-      this.logic.head,
-      this.logic.bodies,
-      this.logic.food,
-    );
   };
 }
 

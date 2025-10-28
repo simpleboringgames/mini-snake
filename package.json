@@ -29,35 +29,5 @@
     "typescript-eslint": "^8.39.1",
     "vite": "^6.2.0",
     "vitest": "^3.2.4"
-  },
-  "sideEffects": [
-    "./src/external/pixi.js/environment-browser/browserAll.*",
-    "./src/external/pixi.js/rendering/init.*",
-    "./src/external/pixi.js/index.*",
-    "./src/external/pixi.js/app/init.*",
-    "./src/external/pixi.js/scene/graphics/init.*",
-    "./ignored/src/external/pixi.js/environment-webworker/webworkerAll.*",
-    "./ignored/src/external/pixi.js/spritesheet/init.*",
-    "./ignored/src/external/pixi.js/rendering/renderers/shared/texture/utils/textureFrom.*",
-    "./ignored/src/external/pixi.js/gif/init.*",
-    "./ignored/src/external/pixi.js/accessibility/init.*",
-    "./ignored/src/external/pixi.js/advanced-blend-modes/init.*",
-    "./ignored/src/external/pixi.js/compressed-textures/dds/init.*",
-    "./ignored/src/external/pixi.js/compressed-textures/ktx/init.*",
-    "./ignored/src/external/pixi.js/compressed-textures/ktx2/init.*",
-    "./ignored/src/external/pixi.js/compressed-textures/basis/init.*",
-    "./ignored/src/external/pixi.js/events/init.*",
-    "./ignored/src/external/pixi.js/dom/init.*",
-    "./ignored/src/external/pixi.js/filters/init.*",
-    "./ignored/src/external/pixi.js/math-extras/init.*",
-    "./ignored/src/external/pixi.js/scene/sprite-tiling/init.*",
-    "./ignored/src/external/pixi.js/scene/text/init.*",
-    "./ignored/src/external/pixi.js/scene/text-bitmap/init.*",
-    "./ignored/src/external/pixi.js/scene/text-html/init.*",
-    "./ignored/src/external/pixi.js/scene/mesh/init.*",
-    "./ignored/src/external/pixi.js/prepare/init.*",
-    "./ignored/src/external/pixi.js/unsafe-eval/init.*",
-    "./ignored/src/external/pixi.js/scene/sprite-nine-slice/init.*",
-    "./ignored/src/external/pixi.js/scene/particle-container/init.*"
-  ]
+  }
 }
