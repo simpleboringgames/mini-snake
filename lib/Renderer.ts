@@ -2,7 +2,7 @@ import { type AlteredPieces, type Dimensions } from "./OfflineLogic";
 
 export class Renderer {
   private gridSize: number;
-  private ctx: CanvasRenderingContext2D;
+  ctx: CanvasRenderingContext2D;
   private canvas_: HTMLCanvasElement;
 
   constructor(gridSize: number, dimensions: Dimensions) {

@@ -1,38 +1,34 @@
 import { OfflineLogic, type Dimensions } from "./OfflineLogic";
 import { Renderer } from "./Renderer";
-import { Interaction } from "./Interaction";
 
 export class MiniSnake implements Disposable {
   private targetPixelSize: number = 20;
   private logic: OfflineLogic;
-  private interaction: Interaction;
   private renderer: Renderer;
   private targetFps = 10;
   private targetFrameDuration = 1000 / this.targetFps;
   private lastFrameTime = 0;
   private playArea : HTMLElement;
+  private logicDimensions : Dimensions;
 
   constructor(playArea: HTMLElement) {
     this.playArea = playArea;
     const rendererDimensions = MiniSnake.calculateRendererDimensions(this.playArea);
     this.renderer = new Renderer(this.targetPixelSize, rendererDimensions);
 
-    const logicDimensions = MiniSnake.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
-    this.logic = new OfflineLogic({ dimensions: logicDimensions, startingLength: 10 });
-
-    this.interaction = new Interaction(
-      this.logic.head,
-      this.logic.setVelocity,
-      this.logic.setTarget
-    );
+    this.logicDimensions = MiniSnake.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
+    this.logic = new OfflineLogic({ dimensions: this.logicDimensions, startingLength: 10 });
 
     playArea.appendChild(this.renderer.canvas);
     this.playArea?.addEventListener("resize", this.onResize);
+    window.addEventListener("keydown", this.onKeyDown);
+    window.addEventListener("pointermove", this.onPointerMove);
   }
 
   [Symbol.dispose](): void {
-    this.interaction[Symbol.dispose]();
     this.playArea?.removeEventListener("resize", this.onResize);
+    window.removeEventListener("pointermove", this.onPointerMove);
+    window.removeEventListener("keydown", this.onKeyDown);
   }
 
   get canvas() {
@@ -61,11 +57,11 @@ export class MiniSnake implements Disposable {
     return fullScreenElement;
   }
 
-  static calculateRendererDimensions(playArea: HTMLElement): Dimensions {
+  private static calculateRendererDimensions(playArea: HTMLElement): Dimensions {
     return { width: playArea.clientWidth, height: playArea.clientHeight };
   }
 
-  static calculateLogicDimensions(rendererDimensions: Dimensions, targetPixelSize: number): Dimensions {
+  private static calculateLogicDimensions(rendererDimensions: Dimensions, targetPixelSize: number): Dimensions {
     return { width: (rendererDimensions.width / targetPixelSize) - 1, height: (rendererDimensions.height / targetPixelSize) - 1 };
   }
 
@@ -75,6 +71,28 @@ export class MiniSnake implements Disposable {
 
     this.renderer.dimensions = rendererDimensions;
     this.logic.setWidthAndHeight(logicDimensions.width, logicDimensions.height);
+  };
+
+  private onKeyDown = (keydown: KeyboardEvent) => {
+    const keyMap: Record<string, { x: number; y: number }> = {
+      w: { x: 0, y: -1 },
+      ArrowUp: { x: 0, y: -1 },
+      a: { x: -1, y: 0 },
+      ArrowLeft: { x: -1, y: 0 },
+      s: { x: 0, y: 1 },
+      ArrowDown: { x: 0, y: 1 },
+      d: { x: 1, y: 0 },
+      ArrowRight: { x: 1, y: 0 },
+    };
+
+    const velocity = keyMap[keydown.key];
+    if (velocity) {
+      this.logic.setVelocity(velocity);
+    }
+  };
+
+  private onPointerMove = (pointerEvent: PointerEvent) => {
+    this.logic.setTarget({ x: pointerEvent.x / this.logicDimensions.width, y: pointerEvent.y / this.logicDimensions.height });
   };
 }
 

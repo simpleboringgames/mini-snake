@@ -13,9 +13,9 @@ export class OfflineLogic {
   private config: Config;
 
   head: SnakeBody;
+  food: Food;
   exactHead: Coordinate;
   bodies: Array<SnakeBody>;
-  food: Food;
 
   lastInput: Input;
 
