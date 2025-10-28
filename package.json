@@ -1,8 +1,9 @@
 {
   "name": "mini-snake",
   "version": "0.3.0",
-  "private": true,
+  "private": false,
   "type": "module",
+  "module": "./dist/MiniSnake.ts",
   "scripts": {
     "start": "npm run dev",
     "build": "npm run lint && tsc && vite build",
@@ -14,6 +15,8 @@
   "devDependencies": {
     "@eslint/js": "^9.33.0",
     "@pixi/colord": "^2.9.6",
+    "@types/node": "^24.9.2",
+    "@types/webpack-env": "^1.18.8",
     "@xmldom/xmldom": "^0.8.11",
     "earcut": "^3.0.2",
     "eslint": "^9.33.0",
@@ -24,40 +27,12 @@
     "ismobilejs": "^1.1.1",
     "parse-svg-path": "^0.1.2",
     "prettier": "^3.5.3",
+    "terser": "^5.44.0",
     "tiny-lru": "^11.4.5",
     "typescript": "~5.7.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^6.2.0",
+    "vite-plugin-dts": "^4.5.4",
     "vitest": "^3.2.4"
-  },
-  "sideEffects": [
-    "./src/external/pixi.js/environment-browser/browserAll.*",
-    "./src/external/pixi.js/rendering/init.*",
-    "./src/external/pixi.js/index.*",
-    "./src/external/pixi.js/app/init.*",
-    "./src/external/pixi.js/scene/graphics/init.*",
-    "./ignored/src/external/pixi.js/environment-webworker/webworkerAll.*",
-    "./ignored/src/external/pixi.js/spritesheet/init.*",
-    "./ignored/src/external/pixi.js/rendering/renderers/shared/texture/utils/textureFrom.*",
-    "./ignored/src/external/pixi.js/gif/init.*",
-    "./ignored/src/external/pixi.js/accessibility/init.*",
-    "./ignored/src/external/pixi.js/advanced-blend-modes/init.*",
-    "./ignored/src/external/pixi.js/compressed-textures/dds/init.*",
-    "./ignored/src/external/pixi.js/compressed-textures/ktx/init.*",
-    "./ignored/src/external/pixi.js/compressed-textures/ktx2/init.*",
-    "./ignored/src/external/pixi.js/compressed-textures/basis/init.*",
-    "./ignored/src/external/pixi.js/events/init.*",
-    "./ignored/src/external/pixi.js/dom/init.*",
-    "./ignored/src/external/pixi.js/filters/init.*",
-    "./ignored/src/external/pixi.js/math-extras/init.*",
-    "./ignored/src/external/pixi.js/scene/sprite-tiling/init.*",
-    "./ignored/src/external/pixi.js/scene/text/init.*",
-    "./ignored/src/external/pixi.js/scene/text-bitmap/init.*",
-    "./ignored/src/external/pixi.js/scene/text-html/init.*",
-    "./ignored/src/external/pixi.js/scene/mesh/init.*",
-    "./ignored/src/external/pixi.js/prepare/init.*",
-    "./ignored/src/external/pixi.js/unsafe-eval/init.*",
-    "./ignored/src/external/pixi.js/scene/sprite-nine-slice/init.*",
-    "./ignored/src/external/pixi.js/scene/particle-container/init.*"
-  ]
+  }
 }
