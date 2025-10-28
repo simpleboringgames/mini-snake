@@ -8,7 +8,6 @@ export default defineConfig({
       name: "MiniSnake",
       fileName: "mini-snake"
     },
-    modulePreload: false,
     rollupOptions: {
       treeshake: "smallest"
     },
