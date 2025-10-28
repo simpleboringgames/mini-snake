@@ -127,7 +127,7 @@ export class OfflineLogic {
     }
   };
 
-  update(this: OfflineLogic) {
+  update(this: OfflineLogic) : { added: Coordinate, modified: Coordinate, removed: Coordinate } {
     if (this.nextVelocity !== undefined) {
       this.lastInput = Input.Velocity;
       this.applyVelocity(this.nextVelocity);
@@ -187,6 +187,21 @@ export class OfflineLogic {
     }
 
     this.updatesSinceLastTurn += 1;
+
+    return {
+      added: {
+        x: 0,
+        y: 0
+      },
+      modified: {
+        x: 0,
+        y: 0
+      },
+      removed: {
+        x: 0,
+        y: 0
+      }
+    }
   };
 
   public addLength(this: OfflineLogic, amount: number) {

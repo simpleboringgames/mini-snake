@@ -9,15 +9,15 @@ export class Renderer {
   private gridSize: number;
   private width: number;
   private height: number;
-
+  private ctx: CanvasRenderingContext2D;
 
   constructor(app: Application, gridSize: number, width: number, height: number) {
     this.gridSize = gridSize;
     this.width = width;
     this.height = height;
 
-    this.head = Renderer.newPixel("rgb(255, 81, 0)", this.gridSize);
-    this.normalfood = Renderer.newPixel("rgb(0, 156, 52)", this.gridSize);
+    // this.head = Renderer.newPixel("rgb(255, 81, 0)", this.gridSize);
+    // this.normalfood = Renderer.newPixel("rgb(0, 156, 52)", this.gridSize);
 
     app.stage.addChild(this.bodies);
     app.stage.addChild(this.head);
@@ -29,11 +29,14 @@ export class Renderer {
     this.height = height;
   }
 
-  public set = (
-    head: Coordinate,
-    bodies: Array<Coordinate>,
-    normalfood: Coordinate,
-  ) => {
+  public draw = (head: Coordinate, body: Coordinate, remove: Coordinate) => {
+    this.ctx.clearRect(remove.x, remove.y, this.gridSize, this.gridSize);
+
+    // this.ctx.col
+
+    this.ctx.fillRect();
+    this.ctx.fillRect();
+
     const multiplierWidth = 1 + this.width % this.gridSize / this.width;
     const multiplierHeight = 1 + this.height % this.gridSize / this.height;
 
@@ -66,7 +69,9 @@ export class Renderer {
     this.normalfood.position.set(normalfood.x * gridSizeWidth, normalfood.y * gridSizeHeight);
   };
 
-  private static newPixel = (fill: FillInput, gridSize: number) => {
+  private static newPixel = (ctx: CanvasRenderingContext2D, fill: FillInput, gridSize: number) => {
+    ctx.rect(0, 0, gridSize, gridSize);
+
     const pixel = new Graphics()
       .rect(0, 0, gridSize, gridSize)
       .fill(fill)

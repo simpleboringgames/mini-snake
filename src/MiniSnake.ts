@@ -5,14 +5,13 @@ import { Interaction } from "./Interaction";
 
 export class MiniSnake implements Disposable {
   private app: Application = new Application();
-
   private targetPixelSize: number = 20;
-
   private logic: OfflineLogic;
-
   private interaction: Interaction;
-
   private renderer: Renderer;
+  private targetFps = 10;
+  private targetFrameDuration = 1000 / this.targetFps;
+  private lastFrameTime = 0;
 
   constructor() {
     const rendererDimensions = MiniSnake.calculateRendererDimensions();
@@ -34,6 +33,20 @@ export class MiniSnake implements Disposable {
     window.removeEventListener("resize", this.onResize);
 
     this.interaction[Symbol.dispose]();
+  }
+
+  public start () {
+    this.onAnimationFrame(0);
+  }
+
+  private onAnimationFrame = (timestamp: number) => {
+    requestAnimationFrame(this.onAnimationFrame);
+
+    const delta = timestamp - this.lastFrameTime;
+    if (delta < this.targetFrameDuration) {
+      return;
+    }
+    this.lastFrameTime = timestamp - (delta % this.targetFrameDuration);
   }
 
   static calculateRendererDimensions(): { width: number, height: number } {
