@@ -12,7 +12,14 @@ export default defineConfig({
     rollupOptions: {
       treeshake: "smallest"
     },
-    minify: "terser"
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        passes: 3,
+      },
+      mangle: true,
+    }
   },
   plugins: [dts({
     rollupTypes: true,
