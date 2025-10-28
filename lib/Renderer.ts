@@ -1,4 +1,4 @@
-import { type AlteredPieces, type Dimensions } from "./OfflineLogic";
+import { type AlteredPieces, type Dimensions } from "./Logic";
 
 export class Renderer {
   private gridSize: number;

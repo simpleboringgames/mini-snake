@@ -1,9 +1,9 @@
-import { OfflineLogic, type Dimensions } from "./OfflineLogic";
+import { Logic, type Dimensions } from "./Logic";
 import { Renderer } from "./Renderer";
 
 export class MiniSnake implements Disposable {
   private targetPixelSize: number = 20;
-  private logic: OfflineLogic;
+  private logic: Logic;
   private renderer: Renderer;
   private targetFps = 10;
   private targetFrameDuration = 1000 / this.targetFps;
@@ -17,7 +17,7 @@ export class MiniSnake implements Disposable {
     this.renderer = new Renderer(this.targetPixelSize, rendererDimensions);
 
     this.logicDimensions = MiniSnake.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
-    this.logic = new OfflineLogic({ dimensions: this.logicDimensions, startingLength: 10 });
+    this.logic = new Logic({ dimensions: this.logicDimensions, startingLength: 10 });
 
     playArea.appendChild(this.renderer.canvas);
     this.playArea?.addEventListener("resize", this.onResize);

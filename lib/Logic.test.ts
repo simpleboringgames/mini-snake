@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { normalizeVelocity } from "./OfflineLogic";
+import { normalizeVelocity } from "./Logic";
 
 test("normalize velocity fixes the magnitude", () => {
   const speed = 5;
