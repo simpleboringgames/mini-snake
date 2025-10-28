@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import { resolve } from 'path';
+import dts from "vite-plugin-dts";
 
 export default defineConfig({
   build: {
@@ -13,6 +14,10 @@ export default defineConfig({
     },
     minify: "terser"
   },
+  plugins: [dts({
+    rollupTypes: true,
+    tsconfigPath: "./tsconfig.json",
+  })],
   server: {
     port: 8080,
     open: true,
