@@ -8,16 +8,24 @@ export class MiniSnake implements Disposable {
   private targetFps = 10;
   private targetFrameDuration = 1000 / this.targetFps;
   private lastFrameTime = 0;
-  private playArea : HTMLElement;
-  private logicDimensions : Dimensions;
+  private playArea: HTMLElement;
+  private logicDimensions: Dimensions;
 
   constructor(playArea: HTMLElement) {
     this.playArea = playArea;
-    const rendererDimensions = MiniSnake.calculateRendererDimensions(this.playArea);
+    const rendererDimensions = MiniSnake.calculateRendererDimensions(
+      this.playArea
+    );
     this.renderer = new Renderer(this.targetPixelSize, rendererDimensions);
 
-    this.logicDimensions = MiniSnake.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
-    this.logic = new Logic({ dimensions: this.logicDimensions, startingLength: 10 });
+    this.logicDimensions = MiniSnake.calculateLogicDimensions(
+      rendererDimensions,
+      this.targetPixelSize
+    );
+    this.logic = new Logic({
+      dimensions: this.logicDimensions,
+      startingLength: 10,
+    });
 
     playArea.appendChild(this.renderer.canvas);
     this.playArea?.addEventListener("resize", this.onResize);
@@ -35,7 +43,7 @@ export class MiniSnake implements Disposable {
     return this.renderer.canvas;
   }
 
-  public start () {
+  public start() {
     this.onAnimationFrame(0);
   }
 
@@ -49,51 +57,66 @@ export class MiniSnake implements Disposable {
     this.lastFrameTime = timestamp - (delta % this.targetFrameDuration);
     const changes = this.logic.update();
     this.renderer.draw(changes);
-  }
+  };
 
-  public static createFullScreenOverlay() : HTMLElement {
-    const fullScreenElement = document.createElement('div');
-    fullScreenElement.style.cssText = "position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;";
+  public static createFullScreenOverlay(): HTMLElement {
+    const fullScreenElement = document.createElement("div");
+    fullScreenElement.style.cssText =
+      "position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;";
     return fullScreenElement;
   }
 
-  private static calculateRendererDimensions(playArea: HTMLElement): Dimensions {
+  private static calculateRendererDimensions(
+    playArea: HTMLElement
+  ): Dimensions {
     return { width: playArea.clientWidth, height: playArea.clientHeight };
   }
 
-  private static calculateLogicDimensions(rendererDimensions: Dimensions, targetPixelSize: number): Dimensions {
-    return { width: (rendererDimensions.width / targetPixelSize) - 1, height: (rendererDimensions.height / targetPixelSize) - 1 };
+  private static calculateLogicDimensions(
+    rendererDimensions: Dimensions,
+    targetPixelSize: number
+  ): Dimensions {
+    return {
+      width: rendererDimensions.width / targetPixelSize - 1,
+      height: rendererDimensions.height / targetPixelSize - 1,
+    };
   }
 
   private onResize = () => {
-    const rendererDimensions = MiniSnake.calculateRendererDimensions(this.playArea);
-    const logicDimensions = MiniSnake.calculateLogicDimensions(rendererDimensions, this.targetPixelSize);
+    const rendererDimensions = MiniSnake.calculateRendererDimensions(
+      this.playArea
+    );
+    const logicDimensions = MiniSnake.calculateLogicDimensions(
+      rendererDimensions,
+      this.targetPixelSize
+    );
 
     this.renderer.dimensions = rendererDimensions;
-    this.logic.setWidthAndHeight(logicDimensions.width, logicDimensions.height);
+    this.logic.dimensions = logicDimensions;
   };
 
-  private onKeyDown = (keydown: KeyboardEvent) => {
+  private onKeyDown = ({ key }: KeyboardEvent) => {
     const keyMap: Record<string, { x: number; y: number }> = {
-      w: { x: 0, y: -1 },
-      ArrowUp: { x: 0, y: -1 },
-      a: { x: -1, y: 0 },
-      ArrowLeft: { x: -1, y: 0 },
-      s: { x: 0, y: 1 },
-      ArrowDown: { x: 0, y: 1 },
-      d: { x: 1, y: 0 },
-      ArrowRight: { x: 1, y: 0 },
+      w: { x: 0, y: -Infinity },
+      ArrowUp: { x: 0, y: -Infinity },
+      a: { x: -Infinity, y: 0 },
+      ArrowLeft: { x: -Infinity, y: 0 },
+      s: { x: 0, y: Infinity },
+      ArrowDown: { x: 0, y: Infinity },
+      d: { x: Infinity, y: 0 },
+      ArrowRight: { x: Infinity, y: 0 },
     };
 
-    const velocity = keyMap[keydown.key];
+    const velocity = keyMap[key];
     if (velocity) {
-      this.logic.setVelocity(velocity);
+      this.logic.setTarget(velocity);
     }
   };
 
   private onPointerMove = (pointerEvent: PointerEvent) => {
-    this.logic.setTarget({ x: pointerEvent.x / this.targetPixelSize, y: pointerEvent.y / this.targetPixelSize });
+    this.logic.setTarget({
+      x: pointerEvent.x / this.targetPixelSize,
+      y: pointerEvent.y / this.targetPixelSize,
+    });
   };
 }
-
-
