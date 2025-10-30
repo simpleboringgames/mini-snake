@@ -39,13 +39,13 @@ export class Renderer {
   set dimensions(dimensions: Dimensions) {
     this.canvas.width = dimensions.width * window.devicePixelRatio;
     this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    this.canvas.width = dimensions.width;
+    this.canvas.style.width = `${dimensions.width}px`;
 
     this.canvas.height = dimensions.height * window.devicePixelRatio;
     this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    this.canvas.height = dimensions.height;
+    this.canvas.style.height = `${dimensions.height}px`;
 
-    this.ctx.fillRect(0, 0, dimensions.width, dimensions.height);
+    this.ctx.globalAlpha = 0.2;
   }
 
   public clear(coordinate: Vector) {
