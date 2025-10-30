@@ -1,4 +1,4 @@
-import { type AlteredPieces, type Dimensions } from "./Logic";
+import type { Dimensions, Vector } from "./MiniSnake";
 
 export class Renderer {
   private gridSize: number;
@@ -48,50 +48,44 @@ export class Renderer {
     this.ctx.fillRect(0, 0, dimensions.width, dimensions.height);
   }
 
-  public draw = (alteredPieces: AlteredPieces) => {
-    if (alteredPieces.bodyRemoved !== undefined) {
-      this.ctx.clearRect(
-        alteredPieces.bodyRemoved.x * this.gridSize,
-        alteredPieces.bodyRemoved.y * this.gridSize,
-        this.gridSize,
-        this.gridSize
-      );
-    }
+  public clear(coordinate: Vector) {
+    this.ctx.clearRect(
+      coordinate.x * this.gridSize,
+      coordinate.y * this.gridSize,
+      this.gridSize,
+      this.gridSize
+    );
+  }
 
+  public drawHead(coordinate: Vector) {
     this.ctx.fillStyle = "rgb(255, 81, 0)";
     this.ctx.fillRect(
-      alteredPieces.head.x * this.gridSize + 1,
-      alteredPieces.head.y * this.gridSize + 1,
+      coordinate.x * this.gridSize + 1,
+      coordinate.y * this.gridSize + 1,
       this.gridSize - 2,
       this.gridSize - 2
     );
     this.ctx.strokeRect(
-      alteredPieces.head.x * this.gridSize + 1,
-      alteredPieces.head.y * this.gridSize + 1,
+      coordinate.x * this.gridSize + 1,
+      coordinate.y * this.gridSize + 1,
       this.gridSize - 2,
       this.gridSize - 2
     );
+  }
 
-    if (alteredPieces.bodyStart !== undefined) {
-      this.ctx.clearRect(
-        alteredPieces.bodyStart.x * this.gridSize,
-        alteredPieces.bodyStart.y * this.gridSize,
-        this.gridSize,
-        this.gridSize
-      );
-      this.ctx.fillStyle = "grey";
-      this.ctx.fillRect(
-        alteredPieces.bodyStart.x * this.gridSize + 1,
-        alteredPieces.bodyStart.y * this.gridSize + 1,
-        this.gridSize - 2,
-        this.gridSize - 2
-      );
-      this.ctx.strokeRect(
-        alteredPieces.bodyStart.x * this.gridSize + 1,
-        alteredPieces.bodyStart.y * this.gridSize + 1,
-        this.gridSize - 2,
-        this.gridSize - 2
-      );
-    }
-  };
+  public drawBody(coordinate: Vector) {
+    this.ctx.fillStyle = "rgb(128, 128, 128)";
+    this.ctx.fillRect(
+      coordinate.x * this.gridSize + 1,
+      coordinate.y * this.gridSize + 1,
+      this.gridSize - 2,
+      this.gridSize - 2
+    );
+    this.ctx.strokeRect(
+      coordinate.x * this.gridSize + 1,
+      coordinate.y * this.gridSize + 1,
+      this.gridSize - 2,
+      this.gridSize - 2
+    );
+  }
 }
