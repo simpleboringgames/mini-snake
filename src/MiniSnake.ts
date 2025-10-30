@@ -1,16 +1,8 @@
 import { Renderer } from "./Renderer";
 
-export type Coordinate = { x: number; y: number };
+export type Vector = { x: number; y: number };
 export type Dimensions = { width: number; height: number };
 export type Config = { dimensions: Dimensions; startingLength: number };
-export type Vector = Coordinate;
-export type Food = Coordinate;
-export type Velocity = { x: number; y: number };
-export type AlteredPieces = {
-  head: Coordinate;
-  bodyStart: Coordinate | undefined;
-  bodyRemoved: Coordinate | undefined;
-};
 enum CollisionResult {
   Nothing,
   Snake,
@@ -176,9 +168,9 @@ export class MiniSnake implements Disposable {
   };
 
   static checkForCollision(
-    target: Coordinate,
-    food?: Coordinate,
-    snake?: Array<Coordinate>
+    target: Vector,
+    food?: Vector,
+    snake?: Array<Vector>
   ): CollisionResult {
     if (food && target.x === food.x && target.y === food.y) {
       return CollisionResult.Food;
@@ -196,8 +188,8 @@ export class MiniSnake implements Disposable {
 
   private static generateRandomCoordinate(
     within: Dimensions,
-    avoids?: { food?: Coordinate; snake?: Coordinate[] }
-  ): Coordinate {
+    avoids?: { food?: Vector; snake?: Vector[] }
+  ): Vector {
     for (let i = 0; i < 20; i++) {
       const candidate = { x: randInt(within.width), y: randInt(within.height) };
       if (
@@ -332,7 +324,7 @@ export class MiniSnake implements Disposable {
     }
   }
 
-  public setTarget = (target: Coordinate) => {
+  public setTarget = (target: Vector) => {
     const dx = target.x - this.head.x;
     const dy = target.y - this.head.y;
 
@@ -364,7 +356,7 @@ export class MiniSnake implements Disposable {
   }
 }
 
-export function normalizeVelocity(velocity: Velocity, constant: number) {
+export function normalizeVelocity(velocity: Vector, constant: number) {
   if (
     (velocity.x === Infinity || velocity.x === -Infinity) &&
     (velocity.y === Infinity || velocity.y === -Infinity)
