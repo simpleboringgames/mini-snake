@@ -1,6 +1,7 @@
 import { Renderer } from "./Renderer";
 
 export type Vector = { x: number; y: number };
+export type Coordinate = Vector;
 export type Dimensions = { width: number; height: number };
 export type Config = { dimensions: Dimensions; startingLength: number };
 enum CollisionResult {
@@ -168,9 +169,9 @@ export class MiniSnake implements Disposable {
   };
 
   static checkForCollision(
-    target: Vector,
-    food?: Vector,
-    snake?: Array<Vector>
+    target: Coordinate,
+    food?: Coordinate,
+    snake?: Array<Coordinate>
   ): CollisionResult {
     if (food && target.x === food.x && target.y === food.y) {
       return CollisionResult.Food;
@@ -188,8 +189,8 @@ export class MiniSnake implements Disposable {
 
   private static generateRandomCoordinate(
     within: Dimensions,
-    avoids?: { food?: Vector; snake?: Vector[] }
-  ): Vector {
+    avoids?: { food?: Coordinate; snake?: Coordinate[] }
+  ): Coordinate {
     for (let i = 0; i < 20; i++) {
       const candidate = { x: randInt(within.width), y: randInt(within.height) };
       if (
@@ -324,7 +325,7 @@ export class MiniSnake implements Disposable {
     }
   }
 
-  public setTarget = (target: Vector) => {
+  public setTarget = (target: Coordinate) => {
     const dx = target.x - this.head.x;
     const dy = target.y - this.head.y;
 
