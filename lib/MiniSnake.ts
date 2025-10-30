@@ -260,8 +260,7 @@ export class MiniSnake implements Disposable {
   update() {
     this.renderer.clear(this.head);
 
-    const bodyStart = { x: this.head.x, y: this.head.y };
-    this.body.unshift(bodyStart);
+    this.body.unshift({ x: this.head.x, y: this.head.y });
     const bodyRemoved = this.body.pop();
     if (bodyRemoved !== undefined) {
       this.renderer.clear(bodyRemoved);
@@ -305,7 +304,11 @@ export class MiniSnake implements Disposable {
     }
 
     this.renderer.drawHead(this.head);
-    this.renderer.drawBody(bodyStart);
+
+    const bodyStart = this.body[0];
+    if (bodyStart !== undefined) {
+      this.renderer.drawBody(bodyStart);
+    }
   }
 
   public addLength(amount: number) {
