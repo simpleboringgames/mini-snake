@@ -49,9 +49,17 @@ export class Renderer {
   }
 
   public clear(coordinate: Vector) {
+    const multiplierWidth =
+      1 + (this.canvas.width % this.gridSize) / this.canvas.width;
+    const multiplierHeight =
+      1 + (this.canvas.height % this.gridSize) / this.canvas.height;
+
+    const gridSizeWidth = multiplierWidth * this.gridSize;
+    const gridSizeHeight = multiplierHeight * this.gridSize;
+
     this.ctx.clearRect(
-      coordinate.x * this.gridSize,
-      coordinate.y * this.gridSize,
+      coordinate.x * gridSizeWidth,
+      coordinate.y * gridSizeHeight,
       this.gridSize,
       this.gridSize
     );
@@ -73,15 +81,23 @@ export class Renderer {
   }
 
   private drawSquare(coordinate: Vector) {
+    const multiplierWidth =
+      1 + (this.canvas.width % this.gridSize) / this.canvas.width;
+    const multiplierHeight =
+      1 + (this.canvas.height % this.gridSize) / this.canvas.height;
+
+    const gridSizeWidth = multiplierWidth * this.gridSize;
+    const gridSizeHeight = multiplierHeight * this.gridSize;
+
     this.ctx.fillRect(
-      coordinate.x * this.gridSize + 1,
-      coordinate.y * this.gridSize + 1,
+      coordinate.x * gridSizeWidth + 1,
+      coordinate.y * gridSizeHeight + 1,
       this.gridSize - 2,
       this.gridSize - 2
     );
     this.ctx.strokeRect(
-      coordinate.x * this.gridSize + 1,
-      coordinate.y * this.gridSize + 1,
+      coordinate.x * gridSizeWidth + 1,
+      coordinate.y * gridSizeHeight + 1,
       this.gridSize - 2,
       this.gridSize - 2
     );
