@@ -1,16 +1,16 @@
 import { defineConfig } from "vite";
-import { resolve } from 'path';
+import { resolve } from "path";
 import dts from "vite-plugin-dts";
 
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, 'lib/MiniSnake.ts'),
+      entry: resolve(__dirname, "src/MiniSnake.ts"),
       name: "MiniSnake",
-      fileName: "mini-snake"
+      fileName: "mini-snake",
     },
     rollupOptions: {
-      treeshake: "smallest"
+      treeshake: "smallest",
     },
     minify: "terser",
     terserOptions: {
@@ -19,12 +19,14 @@ export default defineConfig({
         passes: 3,
       },
       mangle: true,
-    }
+    },
   },
-  plugins: [dts({
-    rollupTypes: true,
-    tsconfigPath: "./tsconfig.json",
-  })],
+  plugins: [
+    dts({
+      rollupTypes: true,
+      tsconfigPath: "./tsconfig.json",
+    }),
+  ],
   server: {
     port: 8080,
     open: true,
