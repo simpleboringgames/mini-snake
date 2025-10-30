@@ -59,22 +59,20 @@ export class Renderer {
 
   public drawHead(coordinate: Vector) {
     this.ctx.fillStyle = "rgb(255, 81, 0)";
-    this.ctx.fillRect(
-      coordinate.x * this.gridSize + 1,
-      coordinate.y * this.gridSize + 1,
-      this.gridSize - 2,
-      this.gridSize - 2
-    );
-    this.ctx.strokeRect(
-      coordinate.x * this.gridSize + 1,
-      coordinate.y * this.gridSize + 1,
-      this.gridSize - 2,
-      this.gridSize - 2
-    );
+    this.drawSquare(coordinate);
   }
 
   public drawBody(coordinate: Vector) {
     this.ctx.fillStyle = "rgb(128, 128, 128)";
+    this.drawSquare(coordinate);
+  }
+
+  public drawFood(coordinate: Vector) {
+    this.ctx.fillStyle = "rgba(0, 180, 9, 1)";
+    this.drawSquare(coordinate);
+  }
+
+  private drawSquare(coordinate: Vector) {
     this.ctx.fillRect(
       coordinate.x * this.gridSize + 1,
       coordinate.y * this.gridSize + 1,

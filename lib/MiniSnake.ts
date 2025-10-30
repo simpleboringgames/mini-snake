@@ -64,14 +64,16 @@ export class MiniSnake implements Disposable {
       { snake: [this.head] }
     );
 
+    this.renderer.drawFood(this.food);
+
     playArea.appendChild(this.renderer.canvas);
-    this.playArea?.addEventListener("resize", this.onResize);
+    window.addEventListener("resize", this.onResize);
     window.addEventListener("keydown", this.onKeyDown);
     window.addEventListener("pointermove", this.onPointerMove);
   }
 
   [Symbol.dispose](): void {
-    this.playArea?.removeEventListener("resize", this.onResize);
+    window.removeEventListener("resize", this.onResize);
     window.removeEventListener("pointermove", this.onPointerMove);
     window.removeEventListener("keydown", this.onKeyDown);
   }
@@ -139,6 +141,7 @@ export class MiniSnake implements Disposable {
       this.food = MiniSnake.generateRandomCoordinate(this.logicDimensions, {
         snake: [this.head, ...this.body],
       });
+      this.renderer.drawFood(this.food);
     }
   };
 
@@ -296,6 +299,7 @@ export class MiniSnake implements Disposable {
         },
         { food: this.food, snake: [this.head, ...this.body] }
       );
+      this.renderer.drawFood(this.food);
     } else if (collision === CollisionResult.Snake) {
       this.reset();
     }
