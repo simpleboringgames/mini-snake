@@ -18,18 +18,9 @@ export class Renderer {
 
     this.canvas_ = canvas;
     this.ctx = ctx;
-
-    this.canvas.width = dimensions.width * window.devicePixelRatio;
-    this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    this.canvas.style.width = `${dimensions.width}px`;
-
-    this.canvas.height = dimensions.height * window.devicePixelRatio;
-    this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    this.canvas.style.height = `${dimensions.height}px`;
-
-    ctx.fillStyle = "gray";
     ctx.strokeStyle = "black";
-    ctx.globalAlpha = 0.2;
+
+    this.dimensions = dimensions;
   }
 
   get canvas() {
@@ -40,7 +31,6 @@ export class Renderer {
     this.canvas.width = dimensions.width * window.devicePixelRatio;
     this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     this.canvas.style.width = `${dimensions.width}px`;
-
     this.canvas.height = dimensions.height * window.devicePixelRatio;
     this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     this.canvas.style.height = `${dimensions.height}px`;
