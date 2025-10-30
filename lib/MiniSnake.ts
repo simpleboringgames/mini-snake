@@ -141,7 +141,12 @@ export class MiniSnake implements Disposable {
       this.food = MiniSnake.generateRandomCoordinate(this.logicDimensions, {
         snake: [this.head, ...this.body],
       });
-      this.renderer.drawFood(this.food);
+    }
+
+    this.renderer.drawFood(this.food);
+    this.renderer.drawHead(this.head);
+    for (const body of this.body) {
+      this.renderer.drawBody(body);
     }
   };
 
