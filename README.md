@@ -1,6 +1,6 @@
 # Mini Snake
 
-A tiny fast snake game.
+A tiny (~7 kB uncompressed) snake game.
 
 This is the classic snake game. It is simply a snake that either follows the pointer or you can control it with your keyboard (WASD or Arrow Keys).
 
@@ -21,13 +21,3 @@ pnpm install
 pnpm run build
 pnpm run start
 ```
-
-## Future
-
-Some things I would like to do in the future (unless someone wants to contribute!?):
-
-- Snake chases mouse in a better way (currently requires exactly diagonal - hard to predict - less reactive as I would like)
-- Online multiplayer mode
-- Less code (but still readable)!
-- Smaller output size (currently at 316.03 kB)
-- Faster code (but still readable)!
