@@ -251,8 +251,17 @@ export class MiniSnake implements Disposable {
     }
 
     // wrap around
-    position.x = Math.floor((position.x + bounds.width) % bounds.width);
-    position.y = Math.floor((position.y + bounds.height) % bounds.height);
+    if (this.head.x < 0) {
+      this.head.x = Math.floor(bounds.width);
+    } else if (this.head.x > bounds.width) {
+      this.head.x = 0;
+    }
+
+    if (this.head.y < 0) {
+      this.head.y = Math.floor(bounds.height);
+    } else if (this.head.y > bounds.height) {
+      this.head.y = 0;
+    }
   }
 
   update() {
