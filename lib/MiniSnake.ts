@@ -129,6 +129,17 @@ export class MiniSnake implements Disposable {
 
     this.renderer.dimensions = rendererDimensions;
     this.logicDimensions = logicDimensions;
+
+    if (
+      this.food.x < 0 ||
+      this.food.x > this.logicDimensions.width ||
+      this.food.y < 0 ||
+      this.food.y > this.logicDimensions.height
+    ) {
+      this.food = MiniSnake.generateRandomCoordinate(this.logicDimensions, {
+        snake: [this.head, ...this.body],
+      });
+    }
   };
 
   private onKeyDown = ({ key }: KeyboardEvent) => {
@@ -196,21 +207,6 @@ export class MiniSnake implements Disposable {
     };
   }
 
-  // set dimensions(dimensions: Dimensions) {
-  //   this.config.dimensions = dimensions;
-
-  //   if (
-  //     this.food.x < 0 ||
-  //     this.food.x > this.config.dimensions.width ||
-  //     this.food.y < 0 ||
-  //     this.food.y > this.config.dimensions.height
-  //   ) {
-  //     this.food = Logic.generateRandomCoordinate(this.config.dimensions, {
-  //       snake: [this.head, ...this.body],
-  //     });
-  //   }
-  // }
-
   private updateHead(
     position: Vector,
     currentMomentum: Vector,
@@ -254,8 +250,8 @@ export class MiniSnake implements Disposable {
     }
 
     // wrap around
-    position.x = (position.x + bounds.width) % bounds.width;
-    position.y = (position.y + bounds.height) % bounds.height;
+    position.x = Math.floor((position.x + bounds.width) % bounds.width);
+    position.y = Math.floor((position.y + bounds.height) % bounds.height);
   }
 
   update() {
@@ -341,6 +337,11 @@ export class MiniSnake implements Disposable {
   };
 
   reset() {
+    this.renderer.clear(this.head);
+    for (const body of this.body) {
+      this.renderer.clear(body);
+    }
+
     this.addLength(0 - this.body.length);
     this.head = MiniSnake.generateRandomCoordinate({
       width: this.logicDimensions.width,
