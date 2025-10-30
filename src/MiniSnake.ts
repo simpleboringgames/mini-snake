@@ -144,7 +144,7 @@ export class MiniSnake implements Disposable {
   };
 
   private onKeyDown = ({ key }: KeyboardEvent) => {
-    const keyMap: Record<string, { x: number; y: number }> = {
+    const keyMap: Record<string, Vector> = {
       w: { x: 0, y: -Infinity },
       ArrowUp: { x: 0, y: -Infinity },
       a: { x: -Infinity, y: 0 },
